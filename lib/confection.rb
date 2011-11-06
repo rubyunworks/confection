@@ -2,7 +2,7 @@
 #
 module Confection
 
-  FILENAME = '.co'
+  FILENAME = '.co.rb'
 
   def self.[](name)
     evaluator.__config__[name.to_sym]
@@ -22,12 +22,13 @@ module Confection
   end
 
   # Find config file by looking up the '.co' file.
-  def self.file
+  def self.file(dir=nil)
     @file ||= (
-      dir = Dir.pwd
+      file = nil
+      dir  = dir || Dir.pwd
       while dir != '/'
-        file = File.join(dir, FILENAME)
-        break file if File.exist?(file)
+        f = File.join(dir, FILENAME)
+        break file = f if File.exist?(f)
         dir = File.dirname(dir)
       end
       file
@@ -35,8 +36,9 @@ module Confection
   end
 
   # Root directory, where config file is located.
-  def self.root
-    File.dirname(file)
+  def self.root(dir=nil)
+    f = file(dir)
+    f ? File.dirname(f) : nil
   end
 
   #
