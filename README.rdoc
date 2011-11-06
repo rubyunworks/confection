@@ -1,0 +1,53 @@
+= Confection
+
+{Homepage}[http://rubyworks.github.com/confection] |
+{Source Code}[http://github.com/rubyworks/confection] |
+{Mailing List}[http://googlegroups.com/group/rubyworks-mailinglist]
+
+{<img src="http://travis-ci.org/rubyworks/confection.png" />}[http://travis-ci.org/rubyworks/confection]
+
+
+== DESCRIPTION
+
+Confection is multi-tenant confirguration system for Ruby projects. If was 
+designed to faciliate Ruby-based configuration for multiple tools in a
+single file. If is extremely simple, which makes it easy to understand
+and flexible in use.
+
+
+== SYNOPSIS
+
+Create a file in you project called `.co.rb`. In it add configuration blocks
+by name.
+
+As an example let's demonstrate use for Rake tasks.
+
+  $ cat .co.rb
+  #!/usr/bin/env ruby
+  rake do
+    desc 'generate yard docs'
+    task :yard do
+      sh 'yard'
+    end
+  end
+
+In our Rakefile:
+
+  $ cat Rakefile
+  require 'confection'
+  confection('rake')
+
+
+== RELEASE NOTES
+
+Please see HISTORY.rdoc file.
+
+
+== COPYRIGHTS
+
+Copyright (c) 2011 Rubyworks
+
+Confection is distributable in accordance with the terms of the BSD-2-Clause license.
+
+See COPYING.rdoc for detiails.
+
