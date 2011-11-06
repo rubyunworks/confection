@@ -1,0 +1,6 @@
+#!mast .ruby .yardopts bin lib man spec test [A-Z]*.*
+.ruby
+lib/confection.rb
+HISTORY.rdoc
+README.rdoc
+COPYING.rdoc

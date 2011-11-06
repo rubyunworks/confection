@@ -7,7 +7,7 @@
 {<img src="http://travis-ci.org/rubyworks/confection.png" />}[http://travis-ci.org/rubyworks/confection]
 
 
-== DESCRIPTION
+== Description
 
 Confection is multi-tenant confirguration system for Ruby projects. If was 
 designed to faciliate Ruby-based configuration for multiple tools in a
@@ -15,15 +15,14 @@ single file. If is extremely simple, which makes it easy to understand
 and flexible in use.
 
 
-== SYNOPSIS
+== Synopsis
 
-Create a file in you project called `.co.rb`. In it add configuration blocks
+Create a file in you project called `.co`. In it add configuration blocks
 by name.
 
-As an example let's demonstrate use for Rake tasks.
+As an example let's demonstrate how we could use this for our Rake tasks.
 
-  $ cat .co.rb
-  #!/usr/bin/env ruby
+  $ cat .co
   rake do
     desc 'generate yard docs'
     task :yard do
@@ -35,15 +34,39 @@ In our Rakefile:
 
   $ cat Rakefile
   require 'confection'
-  confection('rake')
+  Confection[:rake].call
+
+Now you might wonder why the heck you would do this. That's where the
+ *multi-tenancy* comes into play. Let's add another configuration. This time
+for a tool that has native support for Confection.
+
+  $ cat .co
+  TITLE = "myapp"
+
+  rake do
+    desc 'generate yard docs'
+    task :yard do
+      sh "yard doc --title #{TITLE}"
+    end
+  end
+
+  qed do |config|
+    config.title = "#{TITLE} Demonstrandum"
+  end
+
+Now we have configuration for both the rake tool and the qed test tool in
+a single file. Thus we gain the advantage of reducing the file count of our 
+project while pulling our project configuration together into one place.
+Moreover, these configurations can potentially share settings as demonstrated
+here via the `TITLE` constant.
 
 
-== RELEASE NOTES
+== Release Notes
 
 Please see HISTORY.rdoc file.
 
 
-== COPYRIGHTS
+== Copyrights
 
 Copyright (c) 2011 Rubyworks
 
