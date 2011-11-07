@@ -5,23 +5,29 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="text/javascript"></script>
   <script>
     $(document).ready(function(){
-       $("#readme").load("readme.html");
     });
   </script>
   <style>
-    body { font-family: monospace; margin: 0; padding: 0; background: url(assets/bg.png) top center repeat-x #000;}
-    li p { margin: 2px; }
-    h1 { font-size: 4em; height: 50px; padding: 0; padding-bottom: 0; margin-bottom: 5px; }
+    body { font-family: times, serif; margin: 0; padding: 0; background: url(assets/bg.png) center top repeat #FFF; }
+    h1 { font-size: 4em; height: 50px; padding: 0; padding-bottom: 0.5em; margin-bottom: 5px; }
     h2 { margin-top: 30px; }
     pre { padding: 20px; background: #edd; font-size: 0.7em; font-family: courier; }
     a { text-decoration: none; color: #D48; }
     a:hover { text-decoration: underline; }
 
-    #nav { font-size: 1.2em; text-align: center; background: #222; padding: 5px 10px; color: #FFF; font-weight: bold; }
-    #nav a { color: #D48; font-weight: bold; }
-    #main { margin: 0 auto; max-width: 780px; }
-    #readme { opacity: 0.9; background: #fff; padding: 0.5em 2em 3em 2em; font-size: 1.1em; }
-    #footer { margin-top: 0; padding: 40px 0; text-align: center; background: #222; border-top: 1px solid #999; }
+    #main { margin: 40px 0; min-height: 800px; clear: both; background: #fff; opacity: 0.9; }
+
+    #logo { text-align: center; padding: 1.5em 0; }
+
+    #nav { font-size: 1.2em; text-align: center; padding: 0 10px; color: #555; font-weight: bold; }
+    #nav a { color: #000; font-size: 0.9em; }
+
+    #blurb { padding: 1em 0 2em 0; margin: 0 auto; width: 60%; }
+    #blurb p { font-size: 2.5em;  padding: 0 1em; color: #111; text-align: justify; line-height: 1.8em;
+               font-weight: normal; }
+
+    #footer { margin-top: 0; padding: 20px 0 10px 0; text-align: center; }
+    #footer .copying { color: #333; padding: 1em; font-size: 0.8em; text-align: center; font-weight: bold; }
 
     #rubyworks{ position: fixed; bottom: 10px; right: 10px; padding: 0; opacity: 0.3; }
   </style>
@@ -29,16 +35,26 @@
 <body>
 
 <div id="main">
+  <div id="logo">
+    <img src="assets/logo.jpg" height="240px" />
+  </div>
+
   <div id="nav">
-    Confection &nbsp; &middot; &nbsp;
+    Confection
+    &nbsp; &middot; &nbsp;
     <a href="">Home</a> &nbsp;
     <a href="http://rubydoc.info/gems/confection">API</a> &nbsp;
     <a href="http://rubydoc.info/gems/confection/file/QED.rdoc">QED</a> &nbsp;
     <a href="http://rubygems.org/gems/confection">Gem</a> &nbsp;
-    <a href="http://github.com/rubyworks/confection">Code</a> &nbsp;
+    <a href="http://github.com/rubyworks/confection">Code</a>
+    &nbsp; &middot; &nbsp;
+    <a href="http://travis-ci.org/rubyworks/confection"><img src="http://travis-ci.org/rubyworks/confection.png" /></a>
   </div>
 
-  <div id="readme">
+  <div id="blurb">
+    <p>A Multi-tenant configuration format for Ruby. Elegant in it's simplicty, easy to use but
+    flexible, and of course <i>oh so very tastey</i>. &nbsp;
+    <a href="http://rubydoc.info/gems/confection">It's Time to Learn More...</a></p>
   </div>
 
   <div id="footer">
@@ -53,6 +69,11 @@
     <script type="text/javascript"
     src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
     </script>
+
+    <div class="copying">
+      Confection &copy; Rubyworks 2011 &middot;
+      Background Wayne Thiebaud "Around the Cake", 1962
+    </div>
   </div>
 </div>
 
