@@ -1,5 +1,15 @@
 = RELEASE HISTORY
 
+== 0.0.2 / 2011-11-07
+
+You can now use $CONFIG_FILE to change the default config file.
+Just set the variable prior to requiring confection.
+
+Changes:
+
+* Add $CONFIG_FILE to allow default config file to be adjusted.
+
+
 == 0.0.1 / 2011-11-06
 
 This is the initial release of Confection.
