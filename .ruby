@@ -40,4 +40,4 @@ version: 0.0.1
 name: confection
 description: Confection is a multi-tenant configuration system for Ruby projects.
 organization: Rubyworks
-date: '2011-11-06'
+date: '2011-11-07'

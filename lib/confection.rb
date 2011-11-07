@@ -3,7 +3,7 @@
 module Confection
 
   #
-  FILENAME = '.co.rb'
+  FILENAMES = ['.config.rb', 'config.rb']
 
   # Bootstrap the system, loading current configurations.
   #
@@ -63,8 +63,10 @@ module Confection
       file = nil
       dir  = dir || Dir.pwd
       while dir != '/'
-        f = File.join(dir, FILENAME)
-        break file = f if File.exist?(f)
+        FILENAMES.each do |fname|
+          f = File.join(dir, fname)
+          break(file = f) if File.exist?(f)
+        end
         dir = File.dirname(dir)
       end
       file

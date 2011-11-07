@@ -2,12 +2,7 @@
 
 == 0.0.1 / 2011-11-06
 
-This is the initial release of Confection. Currently
-the project is very much "wet behind the ears." So
-please be patient as it improves. But we wanted to 
-get an early release out to start making use of the
-design presently for configuration support in other
-projects.
+This is the initial release of Confection.
 
 Changes:
 

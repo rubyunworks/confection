@@ -1,7 +1,7 @@
 = Confection
 
-The idea of confection is unifyconfiguration management across multiple tools
-for Ruby. The structure of a confection configuration file is very simple.
+The idea of confection is a unified configuration management across multiple
+tools for Ruby. The structure of a confection configuration file is very simple.
 It is a ruby script sectioned into named blocks.
 
   rake do
@@ -13,10 +13,10 @@ It is a ruby script sectioned into named blocks.
   end
 
 Utilization of the these configurations is strictly up to the consuming 
-application. For example, save natice support in Rake, we can add
+application. For example, save native support in Rake itself, we can add
 to a "dummy" Rakefile:
 
   require 'confection'
 
-  confection('rake')
+  confection('rake').call
 

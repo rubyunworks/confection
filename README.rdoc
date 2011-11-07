@@ -38,18 +38,18 @@ Now you might wonder why the heck you would do this. That's where the
  *multi-tenancy* comes into play. Let's add another configuration. This time
 for a tool that has native support for Confection.
 
-  $ cat .co.rb
-  TITLE = "myapp"
+  $ cat .confection
+  title = "myapp"
 
   rake do
     desc 'generate yard docs'
     task :yard do
-      sh "yard doc --title #{TITLE}"
+      sh "yard doc --title #{title}"
     end
   end
 
   qed do |config|
-    config.title = "#{TITLE} Demonstrandum"
+    config.title = "#{title} Demonstrandum"
   end
 
 Now we have configuration for both the rake tool and the qed test tool in
