@@ -3,7 +3,11 @@
 module Confection
 
   #
-  FILENAMES = ['.config.rb', 'config.rb']
+  if $CONFIG_FILE
+    FILENAMES = [$CONFIG_FILE].flatten.compact
+  else
+    FILENAMES = ['.config.rb', 'config.rb']
+  end
 
   # Bootstrap the system, loading current configurations.
   #
