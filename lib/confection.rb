@@ -1,4 +1,4 @@
-# Welcome to Confection.
+# Welcome to Confection. Your easy means to tool configuration.
 #
 module Confection
 
@@ -47,7 +47,7 @@ module Confection
 
   # Read config file.
   #
-  # @return [String] contents of the `co.rb` file
+  # @return [String] contents of the `.co.rb` file
   def self.read
     File.read(file)
   end
