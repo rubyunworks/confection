@@ -17,10 +17,10 @@ and flexible in use.
 
 == Synopsis
 
-Create a file in you project called `.co.rb`. In it, add configuration blocks
+Create a file in you project called `config.rb`. In it, add configuration blocks
 by name. As an example let's demonstrate how we could use this for Rake tasks.
 
-  $ cat .co.rb
+  $ cat config.rb
   rake do
     desc 'generate yard docs'
     task :yard do
@@ -38,7 +38,7 @@ Now you might wonder why the heck you would do this. That's where the
  *multi-tenancy* comes into play. Let's add another configuration. This time
 for a tool that has native support for Confection.
 
-  $ cat .confection
+  $ cat config.rb
   title = "myapp"
 
   rake do
