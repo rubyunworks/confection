@@ -1,5 +1,7 @@
 #!mast .ruby .yardopts bin lib man spec test [A-Z]*.*
 .ruby
+.yardopts
+lib/confection/basic_object.rb
 lib/confection.rb
 HISTORY.rdoc
 README.rdoc

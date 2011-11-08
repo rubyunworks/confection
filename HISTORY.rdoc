@@ -3,10 +3,13 @@
 == 0.0.2 / 2011-11-07
 
 You can now use $CONFIG_FILE to change the default config file.
-Just set the variable prior to requiring confection.
+Just set the variable prior to using confection. Confection
+should also work with Ruby 1.8.7 and older now.
 
 Changes:
 
+* Lazy load configuration, rather then loading upfront.
+* Add dependency on blankslate gem for Ruby 1.8 and older.
 * Add $CONFIG_FILE to allow default config file to be adjusted.
 
 
