@@ -1,3 +1,5 @@
+require 'confection/basic_object'
+
 # Welcome to Confection. Your easy means to tool configuration.
 #
 module Confection
@@ -12,19 +14,21 @@ module Confection
   # Bootstrap the system, loading current configurations.
   #
   def self.bootstrap
+    @config = {}
     begin
       ::Kernel.eval(read, Evaluator.binding, file)
     rescue => e
       raise e if $DEBUG
       abort e.message
     end
+    @config
   end
 
   # Stores the configuration blocks.
   #
   # @return [Hash] configuration store
   def self.config
-    @config ||= {}
+    @config ||= bootstrap
   end
 
   # Look-up configuration block.
@@ -136,8 +140,5 @@ def confection(name, *args)
     warn "no configuration -- `#{name}'"
   end
 end
-
-# Load configuration.
-Confection.bootstrap #(self)
 
 # Copyright (c) 2011 Rubyworks (BSD-2-Clause)
