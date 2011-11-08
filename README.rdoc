@@ -11,7 +11,7 @@
 
 Confection is multi-tenant configuration system for Ruby projects. If was 
 designed to faciliate Ruby-based configuration for multiple tools in a
-single file. If is extremely simple, which makes it easy to understand
+single file. It is extremely simple, which makes it easy to understand
 and flexible in use.
 
 
