@@ -28,6 +28,7 @@ repositories:
   name: upstream
 resources:
   home: http://rubyworks.github.com/confection
+  docs: http://rubydoc.info/gems/confection
   code: http://github.com/rubyworks/confection
   mail: http://groups.google.com/group/rubyworks-mailinglist
 extra: {}
