@@ -1,6 +1,6 @@
 == Verify
 
-Lets say we have a confection configuration file `conf.rb` containing:
+Lets say we have a confection configuration file `confile.rb` containing:
 
   foo do
     @a = 1

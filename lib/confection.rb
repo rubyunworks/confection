@@ -3,24 +3,21 @@ require 'confection/basic_object'
 # Welcome to Confection. Your easy means to tool configuration.
 #
 module Confection
- 
+
   #
   @config = Hash.new{|h,k| h[k]={}}
 
+  #
   def self.filename
     @filename ||= (
-      if $CONFIG_FILE
-        [$CONFIG_FILE].flatten.compact
-      else
-        ['.conf.rb', 'conf.rb']
-      end     
+      $CONFIG_FILE ? $CONFIG_FILE : '{.,}confile{.rb,}'
     )
   end
 
   # Configuration file can be changed using this method.
   # Alternatively it can be changed using `$CONFIG_FILE`.
-  def self.filename=(fname)
-    @filename = [fname].flatten.compact
+  def self.filename=(glob)
+    @filename = glob
   end
 
   # Bootstrap the system, loading current configurations.
@@ -85,20 +82,14 @@ module Confection
   #
   # @return [String] file path
   def self.file(dir=nil)
-    #@file ||= (
-      #file = nil
-      dir  = dir || Dir.pwd
-      while dir != '/'
-        filename.each do |fname|
-          f = File.join(dir, fname)
-          if File.exist?(f)
-            return f
-          end
-        end
-        dir = File.dirname(dir)
+    dir  = dir || Dir.pwd
+    while dir != '/'
+      if file = Dir.glob(File.join(dir,filename),File::FNM_CASEFOLD).first
+        return file
       end
-      nil
-    #)
+      dir = File.dirname(dir)
+    end
+    nil
   end
 
   # Root directory, where config file is located.
