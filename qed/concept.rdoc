@@ -2,19 +2,19 @@
 
 The idea of confection is a unified configuration management across multiple
 tools for Ruby. The structure of a confection configuration file is very simple.
-It is a ruby script sectioned into named blocks.
+It is a ruby script sectioned into named blocks:
 
   rake do
-    ... rake tasks ...
+    # ... rake tasks ...
   end
 
   vclog do
-    ... config for vclog ...
+    # ... config for vclog ...
   end
 
 Utilization of the these configurations is strictly up to the consuming 
 application. For example, save native support in Rake itself, we can add
-to a "dummy" Rakefile:
+to a Rakefile:
 
   require 'confection'
 
