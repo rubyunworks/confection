@@ -7,11 +7,20 @@ module Confection
   #
   @config = Hash.new{|h,k| h[k]={}}
 
-  #
-  if $CONFIG_FILE
-    FILENAMES = [$CONFIG_FILE].flatten.compact
-  else
-    FILENAMES = ['.conf.rb', 'conf.rb']
+  def self.filename
+    @filename ||= (
+      if $CONFIG_FILE
+        [$CONFIG_FILE].flatten.compact
+      else
+        ['.conf.rb', 'conf.rb']
+      end     
+    )
+  end
+
+  # Configuration file can be changed using this method.
+  # Alternatively it can be changed using `$CONFIG_FILE`.
+  def self.filename=(fname)
+    @filename = [fname].flatten.compact
   end
 
   # Bootstrap the system, loading current configurations.
@@ -80,7 +89,7 @@ module Confection
       #file = nil
       dir  = dir || Dir.pwd
       while dir != '/'
-        FILENAMES.each do |fname|
+        filename.each do |fname|
           f = File.join(dir, fname)
           if File.exist?(f)
             return f
