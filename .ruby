@@ -28,7 +28,7 @@ repositories:
   name: upstream
 resources:
   home: http://rubyworks.github.com/confection
-  docs: http://rubydoc.info/gems/confection
+  docs: http://rubydoc.info/gems/confection/frames
   code: http://github.com/rubyworks/confection
   mail: http://groups.google.com/group/rubyworks-mailinglist
 extra: {}
@@ -38,8 +38,8 @@ revision: 0
 created: '2011-11-06'
 summary: Multi-tenant configuration for Ruby
 title: Confection
-version: 0.0.2
+version: 0.1.0
 name: confection
 description: Confection is a multi-tenant configuration system for Ruby projects.
 organization: Rubyworks
-date: '2011-11-07'
+date: '2011-11-17'
