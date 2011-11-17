@@ -4,8 +4,6 @@ doc
 log
 pkg
 tmp
-man/man1/index.txt
+web
 man/man1/*.html
 man/man1/*.1
-pages
-pages

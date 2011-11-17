@@ -1,4 +1,4 @@
-#!mast .ruby .yardopts bin lib man spec test [A-Z]*.*
+#!mast -x man/*/index.txt .ruby .yardopts bin lib man spec test [A-Z]*.*
 .ruby
 .yardopts
 lib/confection/basic_object.rb

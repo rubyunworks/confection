@@ -3,32 +3,41 @@ require 'confection/basic_object'
 # Welcome to Confection. Your easy means to tool configuration.
 #
 module Confection
+ 
+  #
+  @config = Hash.new{|h,k| h[k]={}}
 
   #
   if $CONFIG_FILE
     FILENAMES = [$CONFIG_FILE].flatten.compact
   else
-    FILENAMES = ['.config.rb', 'config.rb']
+    FILENAMES = ['.conf.rb', 'conf.rb']
   end
 
   # Bootstrap the system, loading current configurations.
   #
   def self.bootstrap
-    @config = {}
-    begin
-      ::Kernel.eval(read, Evaluator.binding, file)
-    rescue => e
-      raise e if $DEBUG
-      abort e.message
+    if file
+      @config[Dir.pwd] = {}
+      begin
+        ::Kernel.eval(read, Evaluator.binding, file)
+      rescue => e
+        raise e if $DEBUG
+        warn e.message
+      end
     end
-    @config
+    @config[Dir.pwd]
   end
 
   # Stores the configuration blocks.
   #
   # @return [Hash] configuration store
   def self.config
-    @config ||= bootstrap
+    if @config.key?(Dir.pwd)
+      @config[Dir.pwd]
+    else
+      bootstrap
+    end
   end
 
   # Look-up configuration block.
@@ -55,30 +64,32 @@ module Confection
 
   # Read config file.
   #
-  # @return [String] contents of the `.co.rb` file
+  # @return [String] contents of the `.conf.rb` file
   def self.read
     File.read(file)
   end
 
-  # Find config file by looking up the '.co.rb' file.
+  # Find config file by looking up the '.conf.rb' file.
   #
   # @param dir [String]
   #   Optional directory to begin search.
   #
   # @return [String] file path
   def self.file(dir=nil)
-    @file ||= (
-      file = nil
+    #@file ||= (
+      #file = nil
       dir  = dir || Dir.pwd
       while dir != '/'
         FILENAMES.each do |fname|
           f = File.join(dir, fname)
-          break(file = f) if File.exist?(f)
+          if File.exist?(f)
+            return f
+          end
         end
         dir = File.dirname(dir)
       end
-      file
-    )
+      nil
+    #)
   end
 
   # Root directory, where config file is located.
@@ -113,18 +124,26 @@ module Confection
   # that are posible on configuration blocks.
   #
   class Controller
-    def initialize(block, &exec_block)
-      @block      = block
-      @exec_block = exec_block
+    def initialize(scope, &block)
+      @scope = scope
+      @block = block
     end
-    def exec(*args)
-      @exec_block.call(*args)
+    def exec(*args)  # should this be named #call instead?
+      @scope.instance_exec(*args, &@block)
     end
     def call(*args)
       ::Kernel.eval('self',::TOPLEVEL_BINDING).instance_exec(*args, &@block)
     end
+    def to_proc
+      @block
+    end
   end
 
+  class NullController
+    def exec(*); end
+    def call(*); end
+    def to_proc; Proc.new{}; end
+  end
 end
 
 # Confection's primary use method.
@@ -133,11 +152,10 @@ end
 def confection(name, *args)
   config_block = Confection[name.to_sym]
   if config_block
-    Confection::Controller.new(config_block) do |*args|
-      instance_exec *args, &config_block
-    end
+    Confection::Controller.new(self, &config_block)
   else
-    warn "no configuration -- `#{name}'"
+    #warn "no configuration -- `#{name}'"
+    Confection::NullController.new
   end
 end
 

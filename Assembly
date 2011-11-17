@@ -8,7 +8,7 @@ gem:
   active: true
 
 github:
-  folder: pages
+  folder: web
 
 dnote:
   output: log/notes.html
