@@ -1,7 +1,7 @@
 require 'confection'
 
 When 'file `(((\S+)))` containing' do |slots, text|
-  fname = slots.first
+  fname = [slots].flatten.first  # temporary transition to new QED
   File.open(fname, 'w'){ |f| f << text }
 end
 
