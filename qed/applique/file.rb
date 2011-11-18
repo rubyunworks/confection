@@ -1,3 +1,4 @@
+require 'confection'
 
 When 'file `(((\S+)))` containing' do |slots, text|
   fname = slots.first

@@ -9,14 +9,14 @@ Lets say we have a confection configuration file `confile.rb` containing:
 We can get hold of the configuration for 'foo' using the `#confection`
 method.
 
-  conf = confection(:foo)
+  config = confection(:foo)
 
-  Confection::Controller.assert === conf
+  Confection::Controller.assert === config
 
 Then if we execute it using `#exec` it will be evaluate in the current
 context.
 
-  conf.exec
+  config.exec
 
   @a  #=> 1
 
