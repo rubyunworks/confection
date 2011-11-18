@@ -110,7 +110,7 @@ module Confection
       new.__binding__
     end
     def __binding__ 
-      ::Kernel.binding
+      binding
     end
     def method_missing(sym, *args, &block)
       #def block.call
