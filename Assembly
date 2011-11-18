@@ -11,6 +11,7 @@ github:
   folder: web
 
 dnote:
+  title: Source Notes
   output: log/notes.html
 
 locat:
