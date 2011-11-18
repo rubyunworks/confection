@@ -2,6 +2,7 @@
 
 {Homepage}[http://rubyworks.github.com/confection] |
 {Source Code}[http://github.com/rubyworks/confection] |
+{Report Issue}[http://github.com/rubyworks/confection/issues] |
 {Mailing List}[http://googlegroups.com/group/rubyworks-mailinglist]
 
 {<img src="http://travis-ci.org/rubyworks/confection.png" />}[http://travis-ci.org/rubyworks/confection]
@@ -17,10 +18,12 @@ and flexible in use.
 
 == Synopsis
 
-Create a file in you project called `config.rb`. In it, add configuration blocks
-by name. As an example let's demonstrate how we could use this for Rake tasks.
+Create a file in you project called `Confile`. By default the file can have any
+name tha matches the glob `{.,}confile{.rb,}` case insensitive. In this file
+add configuration blocks by name. For example, let's demonstrate how we could
+use this to configure Rake tasks.
 
-  $ cat config.rb
+  $ cat Confile
   rake do
     desc 'generate yard docs'
     task :yard do
@@ -38,7 +41,7 @@ Now you might wonder why the heck you would do this. That's where the *multi-ten
 comes into play. Let's add another configuration, and this time for a tool that has
 native support for Confection.
 
-  $ cat config.rb
+  $ cat Confile
   title = "myapp"
 
   rake do
