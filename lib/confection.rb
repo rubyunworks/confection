@@ -103,7 +103,7 @@ module Confection
     f ? File.dirname(f) : nil
   end
 
-  # The Evaluator class is used to evaluate the `.co.rb` file.
+  # The Evaluator class is used to evaluate the configuration file.
   #
   class Evaluator < Module #BasicObject
     def self.binding
