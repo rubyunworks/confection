@@ -1,12 +1,26 @@
+require 'finder'
+require 'yaml'
+require 'ostruct'
+
 require 'confection/basic_object'
+require 'confection/config'
+require 'confection/dsl'
+require 'confection/controller'
 
 # Welcome to Confection. Your easy means to tool configuration.
 #
 module Confection
 
   #
-  @config = Hash.new{|h,k| h[k]={}}
+  @config = Hash.new{|h,k| h[k]=[]}
 
+  #
+  #def self.directory
+  #  Dir.pwd
+  #end
+
+  #
+  #
   #
   def self.filename
     @filename ||= (
@@ -14,47 +28,90 @@ module Confection
     )
   end
 
+  #
   # Configuration file can be changed using this method.
   # Alternatively it can be changed using `$CONFIG_FILE`.
+  #
   def self.filename=(glob)
     @filename = glob
   end
 
+  def self.controller(scope, name, profile)
+    configs = Confection.find(name, profile)
+    Controller.new(scope, *configs)
+  end
+
+  #
   # Bootstrap the system, loading current configurations.
   #
   def self.bootstrap
     if file
-      @config[Dir.pwd] = {}
+      @config[root] = []
       begin
-        ::Kernel.eval(read, Evaluator.binding, file)
+        DSL.load_file(file)
       rescue => e
         raise e if $DEBUG
         warn e.message
       end
     end
-    @config[Dir.pwd]
+    @config[root]
   end
 
-  # Stores the configuration blocks.
+  #
+  # Project properties.
+  #
+  def self.properties
+    if File.exist?('.ruby')
+      data = YAML.load_file('.ruby')
+      OpenStruct.new(data)
+    else
+      OpenStruct.new
+    end
+  end
+
+  #
+  # Stores the configuration.
   #
   # @return [Hash] configuration store
+  #
   def self.config
-    if @config.key?(Dir.pwd)
-      @config[Dir.pwd]
+    if @config.key?(root)
+      @config[root]
     else
       bootstrap
     end
   end
 
+  #
+  # Add as configuratio to the store.
+  #
+  def self.<<(conf)
+    raise unless Config === conf
+    config << conf
+  end
+
+  #
+  # Lookup configuration by tool and optionally profile name.
+  #
+  def self.find(tool, profile=nil)
+    config.select do |c| 
+      c.tool == tool.to_sym && (profile ? c.profile == profile.to_sym : true) 
+    end
+  end
+
+=begin
+  #
   # Look-up configuration block.
   #
   # @param name [Symbol,String]
   #   The identifying name for the config block.
   #
-  def self.[](name)
-    config[name.to_sym]
+  def self.[](key)
+    key = key.split(':') if String === key
+    config[key]
   end
 
+  #
   # Set configuration block.
   #
   # @param name [Symbol,String]
@@ -64,23 +121,30 @@ module Confection
   #   Code block for configuration.
   #
   # @return [Proc] code block
-  def self.[]=(name, block)
-    config[name.to_sym] = block.to_proc
+  #
+  def self.[]=(key, conf)
+    key = key.split(':') if String === key
+    config[key] = conf
   end
+=end
 
+  #
   # Read config file.
   #
   # @return [String] contents of the `.conf.rb` file
+  #
   def self.read
     File.read(file)
   end
 
-  # Find config file by looking up the '.conf.rb' file.
+  #
+  # Lookup configuation file.
   #
   # @param dir [String]
   #   Optional directory to begin search.
   #
   # @return [String] file path
+  #
   def self.file(dir=nil)
     dir  = dir || Dir.pwd
     while dir != '/'
@@ -92,71 +156,28 @@ module Confection
     nil
   end
 
+  #
   # Root directory, where config file is located.
   #
   # @param dir [String]
   #   Optional directory to begin search.
   #
   # @return [String] directory path
+  #
   def self.root(dir=nil)
     f = file(dir)
-    f ? File.dirname(f) : nil
+    f ? File.dirname(f) : Dir.pwd
   end
 
-  # The Evaluator class is used to evaluate the configuration file.
-  #
-  class Evaluator < Module #BasicObject
-    def self.binding
-      new.__binding__
-    end
-    def __binding__ 
-      binding
-    end
-    def method_missing(sym, *args, &block)
-      #def block.call
-      #  ::Kernel.eval('self',::TOPLEVEL_BINDING).instance_exec(&self)
-      #end
-      ::Confection[sym] = block
-    end
-  end
-
-  # The Controller class is used to encapsulate the two types of invocation
-  # that are posible on configuration blocks.
-  #
-  class Controller
-    def initialize(scope, &block)
-      @scope = scope
-      @block = block
-    end
-    def exec(*args)  # should this be named #call instead?
-      @scope.instance_exec(*args, &@block)
-    end
-    def call(*args)
-      ::Kernel.eval('self',::TOPLEVEL_BINDING).instance_exec(*args, &@block)
-    end
-    def to_proc
-      @block
-    end
-  end
-
-  class NullController
-    def exec(*); end
-    def call(*); end
-    def to_proc; Proc.new{}; end
-  end
 end
 
+#
 # Confection's primary use method.
 #
 # @return [Confection::Controller] config controller
-def confection(name, *args)
-  config_block = Confection[name.to_sym]
-  if config_block
-    Confection::Controller.new(self, &config_block)
-  else
-    #warn "no configuration -- `#{name}'"
-    Confection::NullController.new
-  end
+#
+def confection(tool, profile=nil)
+  Confection.controller(self, tool, profile)
 end
 
 # Copyright (c) 2011 Rubyworks (BSD-2-Clause)
