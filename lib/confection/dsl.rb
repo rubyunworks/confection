@@ -85,7 +85,7 @@ module Confection
 
       settings[:profile] ||= @_profile
 
-      ::Confection << Config.factory(settings)
+      Confection.concat(Config.collect(settings))
     end
 
     #

@@ -1,172 +1,71 @@
 module Confection
 
   # Base class for other config types.
+  #
   class Config
 
     #
-    def self.subtypes
-      @subtypes ||= []
+    # @param [Hash] settings
+    #
+    def self.collect(settings)
+      if settings[:file]
+        glob  = settings[:file]
+        paths = Find.path(File.join('task', glob))
+        paths.map do |path|
+          settings[:file] = path
+          new(settings)
+        end
+      else
+        [ new(settings) ]
+      end    
     end
 
     #
-    def self.inherited(subtype)
-      subtypes << subtype
-    end
-
+    # Initialize Config instance. Config instances are per-configuration,
+    # which means they are associated with one and only one block, text or
+    # configuration file. Developer's should use `Config.collect()` to gather
+    # a set of configurations using on a file glob.
     #
-    #
-    #
-    def self.factory(settings)
-      subtypes.each do |subtype|
-        return subtype.new(settings) if subtype.applies?(settings)
-      end
-      raise ArgumentError
-    end
-
-    def initialize(settings)
+    def initialize(settings, &block)
       @tool    = settings[:tool]
       @profile = settings[:profile]
+      @text    = settings[:text]
+      @file    = settings[:file]
+      @block   = settings[:block] || block
     end
 
-    #
+    # The name of tool being configured.
     attr :tool
 
-    #
+    # The name of the profile to which this configuration belongs.
     attr :profile
 
-    #
-    def source
-      nil
+    # File containing the configuration, if from file.
+    attr :file
+
+    # Confiration text.
+    def text
+       @text ||= File.read(file)
     end
 
-    #
-    # @return [String] load path to file
-    #
-    # @raise [NoMethodError] if config does not support `#file`
-    #
-    def path
-      Find.path(File.join('task', file))
-    end
+    # Alias for `#text`.
+    alias to_s text
 
-  end
-
-  # YAML configuration.
-  #
-  class YAMLConfig < Config
-
-    EXTENSIONS = %{.yml .yaml}
-
-    def self.applies?(settings)
-      return true if settings[:type] == :yaml
-      if file = settings[:file]
-        ext = File.extname(file)
-        return true if EXTENSIONS.include?(ext)
-      end
-      return false
-    end
-
-    def initialize(text, settings={})
-      super(settings)
-
-      @text = settings[:text]
-      @file = settings[:file]
-    end
-
-    def source
-      @source ||= File.read(path)
-    end
-
-    def data
-      @data ||= YAML.load(text)
-    end
-  end
-
-  # TODO: INIConfig
-
-  # Block configuration is used when a code block is provided
-  # directly to the `#config` method.
-  #
-  class BlockConfig < Config
-
-    def self.applies?(settings)
-      return true if settings[:block]
-      return false
-    end
-
-    def initialize(settings={})
-      super(settings)
-
-      @block = settings[:block]
-    end
-
+    # The block, if block based configuration.
     attr :block
 
-    def source
-      nil  #@todo any way to show the source code of a block?
-    end
-  end
+    # Alias for `#block`.
+    alias to_proc block
 
-  #
-  #
-  class ScriptConfig < Config
-
-    EXTENSIONS = %{.rb .rbx .rake}  # FIXME: others supported extensions ?
-
-    def self.applies?(settings)
-      if file = settings[:file]
-        ext = File.extname(file)
-        return true if EXTENSIONS.include?(ext)
-      end
-      return false
+    # Treat as YAML and load.
+    def yaml
+      @yaml ||= file ? YAML.load_file(file) : YAML.load(text)
     end
 
-    def initialize(settings={})
-      super(settings)
-
-      @file = settings[:file]
+    # Ruby 1.9 defines #inspect as #to_s, ugh.
+    def inspect
+      "#<Confection::Config:#{object_id} @tool=%s @profile=%s>" % [tool.inspect, profile.inspect]
     end
-
-    attr :file
-
-    #
-    # Read source code.
-    #
-    def source
-      @source ||= File.read(path)
-    end
-
-  end
-
-  #
-  #
-  class TextConfig < Config
-
-    EXTENSIONS = %{.txt .text}
-
-    def self.applies?(settings)
-      return true if settings[:type] == :text
-      return true if settings[:text] && settings[:type].nil?
-      if file = settings[:file]
-        ext = File.extname(file)
-        return true if EXTENSIONS.include?(ext)
-      end
-      return false
-    end
-
-    def initialize(settings={})
-      super(settings)
-
-      @text = settings[:text]
-      @file = settings[:file]
-    end
-
-    attr :file
-
-    def source
-      @source ||= (@file ? File.read(path) : @text)
-    end
-
-    alias text source
 
   end
 
