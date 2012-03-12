@@ -1,6 +1,21 @@
-= RELEASE HISTORY
+# RELEASE HISTORY
 
-== 0.1.0 | 2011-11-17
+## 0.2.0 | 2012-03-11
+
+The API has change so as to no longer use #method_missing magic.
+Instead the `config` method is used to define a configuration.
+In addition Confection now supports profiles via either a
+block clause or `:profile` option, as well as the ability
+to import configurations from other projects.
+
+Changes:
+
+* Use #config method instead of method_missing trick.
+* Add support for configuration profiles.
+* Add #text, #yaml, #ini methods for working with non-Ruby configs.
+
+
+## 0.1.0 | 2011-11-17
 
 This major release, probably the first truly usable release,
 adds support for multiple configration files by storing them
@@ -17,7 +32,7 @@ Changes:
   support multiple configurations at once.
 
 
-== 0.0.2 | 2011-11-07
+## 0.0.2 | 2011-11-07
 
 You can now use $CONFIG_FILE to change the default config file.
 Just set the variable prior to using confection. Confection
@@ -30,7 +45,7 @@ Changes:
 * Add $CONFIG_FILE to allow default config file to be adjusted.
 
 
-== 0.0.1 | 2011-11-06
+## 0.0.1 | 2011-11-06
 
 This is the initial release of Confection.
 
