@@ -74,12 +74,14 @@ Confection also supports profiles, either via a `profile` block or via a
 
 Using Confection in your libraries is very simple. As you can see from our
 example Rakefile. The `#confection` method is used to get a handle on a named
-configuration. With it you have two options, `#load` or `#call`. The first
-evaluates the configuration block at the toplevel, while the later evaluates
-the block in the context of the caller. For instance, QED uses this call to
-import user configuration into its Settings instance.
+configuration. With it you have two options, `#call`, `#exec` or `#load`.
+The first calls the block which is evaluated in the context in which it was
+defined. This is recommended. The second will evaluate the block in the 
+context of the caller and the last in the context of the toplevel.
+For instance, QED uses `#exec` to import user configuration directly into
+its Settings instance.
 
-    confection(:qed, profile_name).call
+    confection(:qed, profile_name).exec
 
 
 ## Release Notes
