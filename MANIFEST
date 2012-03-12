@@ -2,6 +2,10 @@
 .ruby
 .yardopts
 lib/confection/basic_object.rb
+lib/confection/config.rb
+lib/confection/controller.rb
+lib/confection/dsl.rb
+lib/confection/manage.rb
 lib/confection.rb
 HISTORY.rdoc
 README.rdoc

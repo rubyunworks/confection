@@ -1,6 +1,6 @@
 ---
 source:
-- profile
+- var
 authors:
 - name: Trans
   email: transfire@gmail.com
@@ -8,8 +8,6 @@ copyrights:
 - holder: Rubyworks
   year: '2011'
   license: BSD-2-Clause
-replacements: []
-alternatives: []
 requirements:
 - name: blankslate
 - name: detroit
@@ -21,6 +19,7 @@ requirements:
   - test
   development: true
 dependencies: []
+alternatives: []
 conflicts: []
 repositories:
 - uri: git://github.com/rubyworks/confection.git
@@ -38,8 +37,8 @@ revision: 0
 created: '2011-11-06'
 summary: Multi-tenant configuration for Ruby
 title: Confection
-version: 0.1.0
+version: 0.2.0
 name: confection
 description: Confection is a multi-tenant configuration system for Ruby projects.
 organization: Rubyworks
-date: '2011-11-17'
+date: '2012-03-11'
