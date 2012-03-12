@@ -6,7 +6,7 @@
 [Mailing List](http://googlegroups.com/group/rubyworks-mailinglist) |
 [IRC Channel](http://chat.us.freenode.net/rubyworks)
 
-{<img src="http://travis-ci.org/rubyworks/confection.png" />}[http://travis-ci.org/rubyworks/confection]
+[![Build Status](https://secure.travis-ci.org/rubyworks/confection.png)](http://travis-ci.org/rubyworks/confection)
 
 
 ## Description
