@@ -2,12 +2,24 @@ module Confection
 
   # The DSL class is used to evaluate the configuration file.
   #
-  class DSL #< BasicObject
+  class DSL < Module #BasicObject
 
     #
+    # Class method initializes the DSL and evaluates the file.
     #
+    def self.load(confile)
+      cf = new(confile)
+      if confile.file
+        cf.__eval__(File.read(confile.file), confile.file)
+      end
+      cf
+    end
+
     #
-    def initialize
+    # @param [Confile] confile
+    #
+    def initialize(confile)
+      @confile = confile
     end
 
     # TODO: Separate properties from project metadata ?
@@ -85,7 +97,22 @@ module Confection
 
       settings[:profile] ||= @_profile
 
-      Confection.concat(Config.collect(settings))
+      @confile.concat(Config.collect(settings))
+    end
+
+    #
+    def import(tool, options={})
+      if from = options[:from]
+        cf = Confile.load(from)
+      else
+        cf = @confile
+      end
+      if cf
+        config = confile.lookup(tool, options[:profile])
+        @conffile << config if config
+      else
+        warn "no configuration file found in `#{from}'"
+      end
     end
 
     #
@@ -100,13 +127,6 @@ module Confection
     #
     def __eval__(code, file=nil)
       Kernel.eval(code, __binding__, file || '(eval)')
-    end
-
-    #
-    # Class method initializes the DSL and evaluates the file.
-    #
-    def self.load_file(file)
-      new.__eval__(File.read(file), file)
     end
 
   end

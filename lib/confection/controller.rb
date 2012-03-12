@@ -38,6 +38,7 @@ module Confection
     #
     def call
       each do |config|
+        #@scope.extend(config.dsl)
         if config.block
           @scope.instance_eval(&config)
         else
@@ -46,15 +47,18 @@ module Confection
       end
     end
 
+    # TODO: TOPLEVEL_BINDING.eval
+
     #
     # Load config as script code in context of TOPLEVEL.
     #
     def load
       each do |config|
+        #Kernel.eval('self', ::TOPLEVEL_BINDING).extend(config.dsl)
         if config.block
-          ::Kernel.eval('self', ::TOPLEVEL_BINDING).instance_eval(&config)
+          Kernel.eval('self', ::TOPLEVEL_BINDING).instance_eval(&config)
         else
-          ::Kernel.eval(config.text, ::TOPLEVEL_BINDING, config.file)
+          Kernel.eval(config.text, ::TOPLEVEL_BINDING, config.file)
         end
       end
     end

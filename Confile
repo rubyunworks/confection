@@ -1,6 +1,23 @@
 #!/usr/bin/env ruby
 
-profile :cov do
-  config :qed, 'confection/qed.rb'
+# Create SimpleCov test coverage report.
+#
+# coverage_folder - the directory in which to store coverage report
+#                   this defaults to `log/coverage`.
+#
+config :qed, :profile=>:cov do
+  require 'simplecov'
+
+  dir = properties.coverage_folder
+
+  SimpleCov.start do
+    coverage_dir(dir || 'log/coverage')
+    #add_group "Label", "lib/qed/directory"
+  end
+end
+
+#
+config :example do
+  puts "Configuration Example!"
 end
 

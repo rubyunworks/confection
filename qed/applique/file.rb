@@ -1,6 +1,7 @@
 require 'confection'
 
-Confection.filename = "test.config"
+# for testing purposes
+Confection::Confile::FILE_PATTERN.replace("test.config")
 
 When 'configuration file `(((\S+)))` containing' do |slots, text|
   Confection.clear!
