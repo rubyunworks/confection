@@ -4,6 +4,7 @@ module Confection
   #
   class Config
 
+=begin
     #
     # @param [Hash] settings
     #
@@ -19,6 +20,7 @@ module Confection
         [ new(settings) ]
       end    
     end
+=end
 
     #
     # Initialize Config instance. Config instances are per-configuration,
@@ -30,7 +32,7 @@ module Confection
       @tool    = settings[:tool]
       @profile = settings[:profile]
       @text    = settings[:text]
-      @file    = settings[:file]
+      #@file    = settings[:file]
       @block   = settings[:block] || block
     end
 
@@ -40,12 +42,12 @@ module Confection
     # The name of the profile to which this configuration belongs.
     attr :profile
 
-    # File containing the configuration, if from file.
-    attr :file
+    ## File containing the configuration, if from file.
+    #attr :file
 
     # Confiration text.
     def text
-       @text ||= File.read(file)
+       @text
     end
 
     # Alias for `#text`.
@@ -59,7 +61,7 @@ module Confection
 
     # Treat as YAML and load.
     def yaml
-      @yaml ||= file ? YAML.load_file(file) : YAML.load(text)
+      @yaml ||= YAML.load(text)
     end
 
     # Ruby 1.9 defines #inspect as #to_s, ugh.

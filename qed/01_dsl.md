@@ -65,6 +65,5 @@ string is passed to the `config` method will be a text-based configuration.
     sample = confile.last
     sample.tool        #=> :sample3
     sample.profile     #=> nil
-    sample.file        #=> nil
     sample.text.strip.assert == "text config"
 

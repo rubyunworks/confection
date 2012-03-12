@@ -3,7 +3,7 @@ module Confection
   # The Controller class is used to encapsulate the two types of invocation
   # that are posible on configuration blocks.
   #
-  class Controller #< Module
+  class Controller
 
     include Enumerable
 
@@ -38,48 +38,46 @@ module Confection
     #
     def call(*args)
       each do |config|
-        if config.block
-          config.block.call(*args)
-        else
-          load config.file
-        end
+        config.block.call(*args) if config.block
       end
     end
 
     #
-    # Evaluate config as script code in context of caller.
+    # Evaluate configuration in the context of the caller.
     #
-    def eval
+    # This is the same as calling:
+    #
+    #   instance_exec(*args, &config)
+    #
+    def exec(*args)
       each do |config|
-        #@scope.extend(config.dsl)
         if config.block
-          @scope.instance_eval(&config)
-        else
-          @scope.instance_eval(config.text, config.file)
+          #@scope.extend(config.dsl) # ?
+          @scope.instance_exec(*args, &config)
         end
       end
     end
-
-    # TODO: TOPLEVEL_BINDING.eval
 
     #
     # Load config as script code in context of TOPLEVEL.
     #
-    def load
+    # This is the same as calling:
+    #
+    #   main = ::TOPLEVEL_BINDING.eval('self')
+    #   main.instance_exec(*args, &config)
+    #
+    def main_exec(*args)
+      main = ::Kernel.eval('self', ::TOPLEVEL_BINDING)  # ::TOPLEVEL_BINDING.eval('self') [1.9+]
       each do |config|
-        #Kernel.eval('self', ::TOPLEVEL_BINDING).extend(config.dsl)
         if config.block
-          Kernel.eval('self', ::TOPLEVEL_BINDING).instance_eval(&config)
-        elsif code.file
-          Kernel.eval(config.text, ::TOPLEVEL_BINDING, config.file)
-        else
-
+          #main.extend(config.dsl)
+          main.instance_exec(*args, &config)
         end
       end
     end
 
-    # @deprecated Alias for `#load` might be deprecated in future.
-    alias eval load
+    # @deprecated Alias for `#main_exec` might be deprecated in future.
+    alias load main_exec
 
     #
     # Only applicable to script and block configs, this method converts
@@ -89,12 +87,10 @@ module Confection
       properties = ::Confection.properties  # do these even matter here ?
       __configs__ = @configs
       block = Proc.new do |*args|
-        #extend dsl  # TODO: extend DSL into instance convtext ?
+        #extend dsl  # TODO: extend DSL into instance context ?
         __configs__.each do |config|
           if config.block
             instance_exec(*args, &config.block)
-          else
-            instance_eval(config.text, config.file)
           end
         end
       end
@@ -124,31 +120,8 @@ module Confection
     end
 
     #
-    # Treat configurations as INI documents, load, merge and return.
-    # This method utilizes the optional `inifile` gem.
+    # Inspection string for controller.
     #
-    # Note that this currently only works with file-based configurations.
-    #
-    def ini(options)
-      require 'inifile'
-      configs = @configs.dup
-      cfg = configs.shift
-      ini = IniFile.load(cfg.file, options)
-      configs.each do |c|
-        ini.merge(IniFile.load(c.file, options))
-      end
-      ini
-    end
-
-    #
-    # Treat configuration as XML document, load and return.
-    #
-    # @todo What library to use?
-    #
-    def xml
-      raise NotImplementedError
-    end
-
     def inspect
       "#<#{self.class}##{object_id}>"
     end

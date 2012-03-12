@@ -19,7 +19,8 @@ module Confection
     # @param [Confile] confile
     #
     def initialize(confile)
-      @confile = confile
+      @_confile = confile
+      @_options = {}
     end
 
     # TODO: Separate properties from project metadata ?
@@ -35,11 +36,16 @@ module Confection
     # Profile block.
     #
     def profile(name, options={}, &block)
-      raise SyntaxError, "nested profile sections" if @_profile
+      raise SyntaxError, "nested tool sections" if @_options[:profile]
 
-      @_profile = name.to_sym
+      original_state = @_options.dup
+
+      @_options.update(options)  # TODO: maybe be more exacting about this
+      @_options[:profile] = name.to_sym
+
       instance_eval(&block)
-      @_profile = nil
+
+      @_options = original_state
     end
 
     #
@@ -67,52 +73,90 @@ module Confection
     #
     # @todo Clean this code up.
     #
-    def config(tool, *opts, &block)
-      settings = (Hash === opts.last ? opts.pop : {})
+    def config(tool, *args, &block)
+      options = (Hash === args.last ? args.pop : {})
 
-      raise ArgumentError, "use block or :block setting" if settings[:block] && block
+      text = args.shift
 
-      settings[:tool]  = tool
-      settings[:block] = block if block
+      raise ArgumentError, "too many arguments"      if args.first
+      raise SyntaxError,   "nested profile sections" if options[:profile] && @_options[:profile]
+      raise ArgumentError, "tool option not allowed" if options[:tool]
+      raise ArgumentError, "use text argument or :text option" if options[:text] && text
+      raise ArgumentError, "use block or :from  setting" if options[:from]  && block
 
-      arg = opts.pop
+      return config_import(tool, options) if options[:from]
 
-      raise ArgumentError, "too many arguments" if opts.first
+      original_state = @_options.dup
 
-      if arg
-        if arg.index("\n")  # not a file path
-          settings[:text] = arg
-        else
-          raise ArgumentError if settings[:file]
-          settings[:file] = arg
-          settings[:text] = nil
-        end
-      end
+      @_options.update(options)
 
-      raise ArgumentError, "use file or text"   if settings[:file] && settings[:text]
-      raise ArgumentError, "use file or block"  if settings[:file] && settings[:block]
-      raise ArgumentError, "use text or block"  if settings[:text] && settings[:block]
+      @_options[:tool]  = tool
+      @_options[:block] = block if block
+      @_options[:text]  = text  if text
 
-      raise SyntaxError, "nested profile sections" if @_profile && settings[:profile]
+      raise ArgumentError, "use text or block" if @_options[:text] && @_options[:block]
 
-      settings[:profile] ||= @_profile
+      @_confile << Config.new(@_options)
 
-      @confile.concat(Config.collect(settings))
+      @_options = original_state
     end
 
+    # TODO: should probably use `:default` profile instead of `nil`.
+
     #
-    def import(tool, options={})
+    # Import configuration from another project's configuration file.
+    #
+    # @todo Better method method name for #remote.
+    #
+    def config_import(tool, options={}, &block)
+      from_tool    = options[:from_tool] || tool
+      from_profile = options[:from_profile]  # || options[:profile]  # could use if :default ?
+
+      raise ArgumentError, "nexted profile sections" if options[:profile] && @_options[:profile]
+
+      profile = options[:profile] || @_options[:profile]
+
       if from = options[:from]
         cf = Confile.load(from)
       else
-        cf = @confile
+        cf = @_confile
       end
+
+      raise "no configuration file found in `#{from}'" unless cf
+
       if cf
-        config = confile.lookup(tool, options[:profile])
-        @conffile << config if config
-      else
-        warn "no configuration file found in `#{from}'"
+        config = confile.lookup(from_tool, from_profile)
+        if config
+          new_options = @_options.dup
+          new_options[:tool]    = tool
+          new_options[:profile] = profile
+          new_options[:block]   = config.block
+          new_options[:text]    = config.text
+
+          # not so sure about this one
+          new_options[:text] += ("\n" + options[:text]) if options[:text]
+
+          @_confile << Config.new(new_options)
+        end
+
+        if block
+          options[:block] = block
+          options[:text]  = nil
+
+          @confile << Config.new(options)
+        end
       end
+    end
+ 
+    #
+    # Evaluate script directory into current scope.
+    #
+    # @todo Make a core extension ?
+    #
+    def import(feature)
+      file = Find.load_path(feature).first
+      raise LoadError, "no such file -- #{feature}" unless file
+      instance_eval(File.read(file), file) if file
     end
 
     #
