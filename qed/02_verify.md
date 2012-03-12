@@ -1,22 +1,24 @@
-== Verify
+## Verify
 
-Lets say we have a confection configuration file `test.config` containing:
+Lets say we have a confection configuration.
 
-    config :foo do
+    confile = Confection::Confile.new
+
+    confile.config :foo do
       @a = 1
     end
 
 We can get hold of the configuration for 'foo' using the `#confection`
 method.
 
-    config = confection(:foo)
+    config = confile.controller(self, :foo)
 
     Confection::Controller.assert === config
 
 Then if we execute it using `#call` it will be evaluate in the current
 context.
 
-    config.call
+    instance_eval(&config)
 
     @a  #=> 1
 

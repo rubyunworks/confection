@@ -8,6 +8,9 @@ module Confection
     FILE_PATTERN = '{.,}confile{.rb,}'
 
     #
+    DIR_PATTERN = 'task/*'
+
+    #
     def self.load(lib=nil)
       if lib
         file = Find.path(FILE_PATTERN, :from=>lib).first
@@ -155,6 +158,27 @@ module Confection
     #
     def last
       @list.last
+    end
+
+    #
+    def config(*args, &block)
+      dsl.config(*args, &block)
+    end
+
+    #
+    def load_task_configs
+      Dir.glob(DIR_PATTERN).each do |file|
+        ext  = File.extname(file)
+        name = file.chomp(ext)
+        tool, profile = name.split('-')
+        dsl.config tool, :profile=>profile, :file=>file
+      end
+    end
+
+    #
+    def controller(scope, name, profile=nil)
+      configs = lookup(name, profile)
+      Controller.new(scope, *configs)
     end
 
   end

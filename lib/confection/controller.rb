@@ -34,9 +34,22 @@ module Confection
     end
 
     #
+    # Execute the configuration code.
+    #
+    def call(*args)
+      each do |config|
+        if config.block
+          config.block.call(*args)
+        else
+          load config.file
+        end
+      end
+    end
+
+    #
     # Evaluate config as script code in context of caller.
     #
-    def call
+    def eval
       each do |config|
         #@scope.extend(config.dsl)
         if config.block
@@ -57,8 +70,10 @@ module Confection
         #Kernel.eval('self', ::TOPLEVEL_BINDING).extend(config.dsl)
         if config.block
           Kernel.eval('self', ::TOPLEVEL_BINDING).instance_eval(&config)
-        else
+        elsif code.file
           Kernel.eval(config.text, ::TOPLEVEL_BINDING, config.file)
+        else
+
         end
       end
     end
@@ -66,27 +81,24 @@ module Confection
     # @deprecated Alias for `#load` might be deprecated in future.
     alias eval load
 
-=begin
     #
     # Only applicable to script and block configs, this method converts
-    # a set of code configs into a single block ready for execution
-    # by either the #call or #load methods. 
+    # a set of code configs into a single block ready for execution.
     #
     def to_proc
-      properties = ::Confection.properties
+      properties = ::Confection.properties  # do these even matter here ?
       __configs__ = @configs
-      block = Proc.new do
+      block = Proc.new do |*args|
+        #extend dsl  # TODO: extend DSL into instance convtext ?
         __configs__.each do |config|
           if config.block
-            config.block.call
+            instance_exec(*args, &config.block)
           else
-            #binding.eval(&config.block)
-            Kernel.eval(config.text, binding, config.file)
+            instance_eval(config.text, config.file)
           end
         end
       end
     end
-=end
 
     #
     # Configurations texts joins together the contents of each
