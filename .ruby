@@ -9,6 +9,7 @@ copyrights:
   year: '2011'
   license: BSD-2-Clause
 requirements:
+- name: finder
 - name: json
   groups:
   - optional
