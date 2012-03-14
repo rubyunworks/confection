@@ -37,9 +37,11 @@ module Confection
     # Execute the configuration code.
     #
     def call(*args)
+      result = nil
       each do |config|
-        config.block.call(*args) if config.block
+        result = config.call(*args) #if config.call?
       end
+      result
     end
 
     #
@@ -50,12 +52,14 @@ module Confection
     #   instance_exec(*args, &config)
     #
     def exec(*args)
+      result = nil
       each do |config|
-        if config.block
+        if config.respond_to?(:to_proc)
           #@scope.extend(config.dsl) # ?
-          @scope.instance_exec(*args, &config)
+          result = @scope.instance_exec(*args, &config)
         end
       end
+      result
     end
 
     #
@@ -67,13 +71,15 @@ module Confection
     #   main.instance_exec(*args, &config)
     #
     def main_exec(*args)
+      result = nil
       main = ::Kernel.eval('self', ::TOPLEVEL_BINDING)  # ::TOPLEVEL_BINDING.eval('self') [1.9+]
       each do |config|
-        if config.block
+        if config.respond_to?(:to_proc)
           #main.extend(config.dsl)
-          main.instance_exec(*args, &config)
+          result = main.instance_exec(*args, &config)
         end
       end
+      result
     end
 
     # @deprecated Alias for `#main_exec` might be deprecated in future.
@@ -84,15 +90,17 @@ module Confection
     # a set of code configs into a single block ready for execution.
     #
     def to_proc
-      properties = ::Confection.properties  # do these even matter here ?
+      #properties = ::Confection.properties  # do these even matter here ?
       __configs__ = @configs
       block = Proc.new do |*args|
+        result = nil
         #extend dsl  # TODO: extend DSL into instance context ?
         __configs__.each do |config|
-          if config.block
-            instance_exec(*args, &config.block)
+          if config.respond_to?(:to_proc)
+            result = instance_exec(*args, &config)
           end
         end
+        result
       end
     end
 
@@ -103,7 +111,7 @@ module Confection
     def text
       txt = []
       @configs.each do |c|
-        str << c.text if c.text
+        txt << c.text if c.text
       end
       txt.join("\n\n")
     end

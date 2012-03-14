@@ -9,7 +9,7 @@
 config :qed, :profile=>:cov do
   require 'simplecov'
 
-  dir = properties.coverage_folder
+  dir = $properties.coverage_folder
 
   SimpleCov.start do
     coverage_dir(dir || 'log/coverage')

@@ -1,74 +1,40 @@
 module Confection
 
-  # Base class for other config types.
-  #
-  class Config
+  module Config
 
-=begin
     #
-    # @param [Hash] settings
+    # List of Config::Base subclases.
     #
-    def self.collect(settings)
-      if settings[:file]
-        glob  = settings[:file]
-        paths = Find.path(File.join('task', glob))
-        paths.map do |path|
-          settings[:file] = path
-          new(settings)
+    def self.types
+      @types ||= []
+    end
+
+    #
+    # Produce a new Config object based on the given `tool` and `options`.
+    #
+    # Types are checked in reverse order of definition so that
+    # subclasses of other types have precedence.
+    #
+    def self.factory(tool, options)
+      object = nil
+      types.reverse_each do |c|
+        if c.apply?(tool, options)
+          object = c.new(tool, options)
+          break(object)
         end
-      else
-        [ new(settings) ]
-      end    
-    end
-=end
-
-    #
-    # Initialize Config instance. Config instances are per-configuration,
-    # which means they are associated with one and only one block, text or
-    # configuration file. Developer's should use `Config.collect()` to gather
-    # a set of configurations using on a file glob.
-    #
-    def initialize(settings, &block)
-      @tool    = settings[:tool]
-      @profile = settings[:profile]
-      @text    = settings[:text]
-      #@file    = settings[:file]
-      @block   = settings[:block] || block
-    end
-
-    # The name of tool being configured.
-    attr :tool
-
-    # The name of the profile to which this configuration belongs.
-    attr :profile
-
-    ## File containing the configuration, if from file.
-    #attr :file
-
-    # Confiration text.
-    def text
-       @text
-    end
-
-    # Alias for `#text`.
-    alias to_s text
-
-    # The block, if block based configuration.
-    attr :block
-
-    # Alias for `#block`.
-    alias to_proc block
-
-    # Treat as YAML and load.
-    def yaml
-      @yaml ||= YAML.load(text)
-    end
-
-    # Ruby 1.9 defines #inspect as #to_s, ugh.
-    def inspect
-      "#<Confection::Config:#{object_id} @tool=%s @profile=%s>" % [tool.inspect, profile.inspect]
+      end
+      object
     end
 
   end
 
 end
+
+require 'confection/config/base'
+require 'confection/config/undef'
+require 'confection/config/text'
+require 'confection/config/ini'
+require 'confection/config/json'
+require 'confection/config/yaml'
+require 'confection/config/ruby'
+require 'confection/config/block'

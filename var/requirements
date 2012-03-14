@@ -1,4 +1,7 @@
 ---
-- blankslate
+- json    (optional)
+- inifile (optional)
 - detroit (build)
 - qed     (test)
+- ae      (test)
+

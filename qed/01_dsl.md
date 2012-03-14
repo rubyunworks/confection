@@ -2,9 +2,9 @@
 
 The DSL class handle evaluation of a project configuration file.
 
-   confile = Confection::Confile.new
+   store = Confection::Store.new
 
-   dsl = confile.dsl
+   dsl = Confection::DSL.new(store)
 
 The DSL instance will have a cached binding.
 
@@ -21,10 +21,10 @@ file.
 
 Evaluation of a configuration file, populate the Confection.config instance.
 
-    sample = confile.last
+    sample = store.last
     sample.tool     #=> :sample1
     sample.profile  #=> nil
-    sample.class    #=> Confection::Config
+    sample.class    #=> Confection::Config::Block
 
 A profile can be used as a means fo defining multiple configuration options
 for a single tool. This can be done by setting the `:profile` option.
@@ -35,7 +35,7 @@ for a single tool. This can be done by setting the `:profile` option.
       end
     HERE
 
-    sample = confile.last
+    sample = store.last
     sample.tool     #=> :sample2
     sample.profile  #=> :opt1
 
@@ -49,7 +49,7 @@ Or it can be done by using a `profile` block.
       end
     HERE
 
-    sample = confile.last
+    sample = store.last
     sample.tool     #=> :sample2
     sample.profile  #=> :opt1
 
@@ -62,7 +62,7 @@ string is passed to the `config` method will be a text-based configuration.
       }
     HERE
 
-    sample = confile.last
+    sample = store.last
     sample.tool        #=> :sample3
     sample.profile     #=> nil
     sample.text.strip.assert == "text config"

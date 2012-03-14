@@ -9,12 +9,23 @@ copyrights:
   year: '2011'
   license: BSD-2-Clause
 requirements:
-- name: blankslate
+- name: json
+  groups:
+  - optional
+  development: true
+- name: inifile
+  groups:
+  - optional
+  development: true
 - name: detroit
   groups:
   - build
   development: true
 - name: qed
+  groups:
+  - test
+  development: true
+- name: ae
   groups:
   - test
   development: true

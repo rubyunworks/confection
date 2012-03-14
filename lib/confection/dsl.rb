@@ -1,36 +1,18 @@
 module Confection
 
-  # The DSL class is used to evaluate the configuration file.
+  # The File class is used to evaluate the configuration file.
   #
   class DSL < Module #BasicObject
 
     #
-    # Class method initializes the DSL and evaluates the file.
+    # @param [Store] Configuration storage instance.
     #
-    def self.load(confile)
-      cf = new(confile)
-      if confile.file
-        cf.__eval__(File.read(confile.file), confile.file)
-      end
-      cf
-    end
-
-    #
-    # @param [Confile] confile
-    #
-    def initialize(confile)
-      @_confile = confile
+    def initialize(store)
+      @_store   = store
       @_options = {}
     end
 
     # TODO: Separate properties from project metadata ?
-
-    #
-    # Project configuration properties.
-    #
-    def properties
-      @properties ||= ::Confection.properties
-    end
 
     #
     # Profile block.
@@ -82,21 +64,21 @@ module Confection
       raise SyntaxError,   "nested profile sections" if options[:profile] && @_options[:profile]
       raise ArgumentError, "tool option not allowed" if options[:tool]
       raise ArgumentError, "use text argument or :text option" if options[:text] && text
-      raise ArgumentError, "use block or :from  setting" if options[:from]  && block
+      #raise ArgumentError, "use block or :from  setting" if options[:from]  && block
 
-      return config_import(tool, options) if options[:from]
+      return config_import(tool, options, &block) if options[:from]
 
       original_state = @_options.dup
 
       @_options.update(options)
 
-      @_options[:tool]  = tool
+      #@_options[:tool]  = tool
       @_options[:block] = block if block
       @_options[:text]  = text  if text
 
-      raise ArgumentError, "use text or block" if @_options[:text] && @_options[:block]
+      raise ArgumentError, "use text or block" if text && block
 
-      @_confile << Config.new(@_options)
+      @_store << Config.factory(tool, @_options)
 
       @_options = original_state
     end
@@ -110,41 +92,44 @@ module Confection
     #
     def config_import(tool, options={}, &block)
       from_tool    = options[:from_tool] || tool
-      from_profile = options[:from_profile]  # || options[:profile]  # could use if :default ?
+      from_profile = options[:from_profile] || options[:profile]
 
-      raise ArgumentError, "nexted profile sections" if options[:profile] && @_options[:profile]
+      raise ArgumentError, "nested profile sections" if options[:profile] && @_options[:profile]
 
       profile = options[:profile] || @_options[:profile]
 
       if from = options[:from]
-        cf = Confile.load(from)
+        store = Project.load(from).store
       else
-        cf = @_confile
+        store = @_store
       end
 
-      raise "no configuration file found in `#{from}'" unless cf
+      raise "no configuration found in `#{from}'" unless store
 
-      if cf
-        config = confile.lookup(from_tool, from_profile)
-        if config
-          new_options = @_options.dup
-          new_options[:tool]    = tool
-          new_options[:profile] = profile
-          new_options[:block]   = config.block
-          new_options[:text]    = config.text
+      configs = store.lookup(from_tool, from_profile)
 
-          # not so sure about this one
-          new_options[:text] += ("\n" + options[:text]) if options[:text]
+      configs.each do |config|
+        new_config  = config.copy(:tool=>tool, :profile=>profile)
 
-          @_confile << Config.new(new_options)
+        #new_options = @_options.dup
+        #new_options[:tool]    = tool
+        #new_options[:profile] = profile
+        #new_options[:block]   = config.block
+        #new_options[:text]    = config.text
+
+        # not so sure about this one
+        if Config::Text === new_config
+          new_config.text += ("\n" + options[:text].to_s) if options[:text]
         end
 
-        if block
-          options[:block] = block
-          options[:text]  = nil
+        @_store << new_config
+      end
 
-          @confile << Config.new(options)
-        end
+      if block
+        options[:profile] = profile
+        options[:block]   = block
+
+        @_store << Config::Block.new(tool, options)
       end
     end
  
@@ -156,7 +141,7 @@ module Confection
     def import(feature)
       file = Find.load_path(feature).first
       raise LoadError, "no such file -- #{feature}" unless file
-      instance_eval(File.read(file), file) if file
+      instance_eval(::File.read(file), file) if file
     end
 
     #

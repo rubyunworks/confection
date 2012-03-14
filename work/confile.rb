@@ -1,3 +1,5 @@
+# DEPRECATED
+
 module Confection
 
   class Confile
@@ -9,6 +11,10 @@ module Confection
 
     #
     DIR_PATTERN = 'task/*'
+
+    def self.load(store, source)
+
+    end
 
     #
     def self.load(lib=nil)

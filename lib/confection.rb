@@ -8,19 +8,27 @@ require 'yaml'
 require 'ostruct'
 
 #require 'confection/basic_object'
-require 'confection/confile'
-require 'confection/manage'
-require 'confection/config'
+require 'confection/project'
+require 'confection/store'
+require 'confection/path_parser'
+require 'confection/file_parser'
 require 'confection/dsl'
+require 'confection/config'
 require 'confection/controller'
+require 'confection/manage'
 
 #
 # Confection's primary use method.
 #
 # @return [Confection::Controller] config controller
 #
-def confection(tool, profile=nil)
-  Confection.controller(self, tool, profile)
+def confection(tool, *options)
+  Confection.controller(self, tool, *options)
+end
+
+def configure(tool, *options)
+  controller = Confection.controller(self, tool, *options)
+  controller.call  # default action
 end
 
 # Copyright (c) 2011 Rubyworks (BSD-2-Clause)
