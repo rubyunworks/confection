@@ -8,4 +8,4 @@ rvm:
   - jruby
   - ree
 env:
-  - config=none
+  - config='none'
