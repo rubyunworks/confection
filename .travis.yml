@@ -1,5 +1,5 @@
 ---
-script: "config='none' bundle exec qed"
+script: "bundle exec qed"
 rvm:
   - 1.8.7
   - 1.9.2
@@ -7,4 +7,5 @@ rvm:
   - rbx-2.0
   - jruby
   - ree
-
+env:
+  - config=none
