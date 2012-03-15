@@ -10,4 +10,4 @@ rvm:
   - jruby-19mode
   - ree
 env:
-  - config='none'
+  - confectionless='true'
