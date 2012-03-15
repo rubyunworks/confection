@@ -19,10 +19,13 @@ and flexible in use.
 
 ## Instruction
 
-Create a file in you project called `Confile`. By default the file can have any
-name tha matches the glob `{.,}confile{.rb,}` case insensitive. In this file
-add configuration blocks by name. For example, let's demonstrate how we could
-use this to configure Rake tasks.
+There are two ways to define configurations --as a `config` entry in the master
+configuration file or a separate file in a project's `task` directory.
+
+For the former, create a file in you project called `Confile`. The file can
+have any name that matches the glob `{.,}confile{.rb,}` case insensitive. In
+this file add configuration blocks by name. For example, let's demonstrate
+how we could use this to configure Rake tasks.
 
     $ cat Confile
     config :rake do
@@ -83,6 +86,14 @@ its Settings instance.
 
     confection(:qed, profile_name).exec
 
+An alternative to adding entries to a project's master configuration file,
+configurations can be placed in individual files in a project's `task/`
+directory. These must follow the naming scheme  `<tool>-<profile>.<type>`
+or in some cases `<profile>.<tool>` (e.g `test.rake`).
+
+Accessing configuration in the task directory works in the exact same fashion
+as those in the master confgiuration file.
+
 
 ## Release Notes
 
@@ -93,7 +104,7 @@ Please see HISTORY.rdoc file.
 
 Copyright (c) 2011 Rubyworks
 
-Confection is distributable in accordance with the *BSD-2-Clause* license.
+Confection is distributable in accordance with the **BSD-2-Clause** license.
 
-See LICENSE.txt for details.
+See LICENSE.txt file for details.
 
