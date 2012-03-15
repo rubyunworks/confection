@@ -13,9 +13,10 @@ module Confection
     #
     def self.load(lib=nil)
       if lib
+        return cache[lib] if cache.key?(lib)
         cache[lib] ||= (
           config_path = Find.path(PATTERN, :from=>lib).first
-          new(File.dirname(config_path))
+          config_path ? new(File.dirname(config_path)) : nil
         )
       else
         lookup

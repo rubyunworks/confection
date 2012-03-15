@@ -4,7 +4,7 @@ ignore 'work', '.yardoc', 'doc', 'log', 'pkg', 'tmp', 'web'
 
 desc "run specs"
 task "spec" do
-  cmd = "qed"
+  cmd = "config='none' qed"
   sh cmd
 end
 
