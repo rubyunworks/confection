@@ -85,13 +85,17 @@ module Confection
 
     # TODO: should probably use `:default` profile instead of `nil`.
 
+    # TODO: most of this code belongs in Store, not here.
+
+    # TODO: rename :from to :gem and support remote repo :git, etc.
+
     #
     # Import configuration from another project's configuration file.
     #
     # @todo Better method method name for #remote.
     #
     def config_import(tool, options={}, &block)
-      from_tool    = options[:from_tool] || tool
+      from_tool    = options[:from_tool]    || tool
       from_profile = options[:from_profile] || options[:profile]
 
       raise ArgumentError, "nested profile sections" if options[:profile] && @_options[:profile]
@@ -99,7 +103,8 @@ module Confection
       profile = options[:profile] || @_options[:profile]
 
       if from = options[:from]
-        store = Project.load(from).store
+        project = Project.load(from)
+        store   = project ? project.store : nil
       else
         store = @_store
       end
