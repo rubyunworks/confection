@@ -28,20 +28,23 @@ module Confection
 
       @list = []
 
-      @file_parser = FileParser.new(self)
-      @path_parser = PathParser.new(self)
-
       sources.each do |source|
         if File.file?(source)
-          @file_parser.parse(source)
+          parse(source)
         else
-          @path_parser.parse(source)
+          # ignore directories
         end
       end
     end
 
     #
     attr :sources
+
+    #
+    def parse(file)
+      dsl = DSL.new(self)
+      dsl.__eval__(::File.read(file), file)
+    end
 
     #
     def each(&block)
@@ -72,8 +75,10 @@ module Confection
     # Lookup configuration by tool and optionally profile name.
     #
     def lookup(tool, profile=nil)
-      select do |c| 
-        c.tool.to_sym == tool.to_sym && (profile ? c.profile.to_sym == profile.to_sym : true) 
+      profile = profile.to_sym if profile
+
+      select do |c|
+        c.tool.to_sym == tool.to_sym && (profile ? c.profile == profile : true) 
       end
     end
 
@@ -119,3 +124,4 @@ module Confection
   end
 
 end
+

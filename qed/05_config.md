@@ -1,18 +1,18 @@
-# Config Classe
+# Config Classes
 
-There are there basic classes of configuration: block, text and file. Block
-configurations encapsulate a block of Ruby code. Text configurations simply
-contain a plain text string. File configurations may be either of these
-but get their content from an a dedicated file.
+There are two basic classes of configuration: block and text. Block
+configurations encapsulate a block of Ruby code. Text configurations
+simply contain a text string --whatever that string may represent.
+More specialized configuration types, such as YAML are subclasses.
 
-## File Configuration
+## Block Configuration
 
 File configuration come from separate files rather then from definitions
 in a project's master configuration file.
 
-    config = confection(:file).first
+    config = confection(:block).first
 
-    Confection::Config::Ruby.assert === config
+    Confection::Config::Block.assert === config
 
 A Ruby-based configuration file, like our example, can be called via the `#call`
 method. This evaluates the code at the TOPLEVEL, like standard `Kernel.load`
@@ -20,7 +20,7 @@ would.
 
     result = config.call
 
-    result.assert == "example file config"
+    result.assert == "example block config"
 
 The call can also be converted into a Proc object via `#to_proc`. This uses
 `instance_eval` internally, so that the Proc object can be evaluated in
@@ -32,7 +32,7 @@ any context it may be needed.
 
     result = proc.call
 
-    result.strip.assert == "example file config"
+    result.strip.assert == "example block config"
 
 
 ## Text Configuraiton

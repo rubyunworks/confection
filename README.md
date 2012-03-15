@@ -19,10 +19,7 @@ and flexible in use.
 
 ## Instruction
 
-There are two ways to define configurations --as a `config` entry in the master
-configuration file or a separate file in a project's `task` directory.
-
-For the former, create a file in you project called `Confile`. The file can
+To get started, create a file in you project called `Confile`. The file can
 have any name that matches the glob `{.,}confile{.rb,}` case insensitive. In
 this file add configuration blocks by name. For example, let's demonstrate
 how we could use this to configure Rake tasks.
@@ -85,14 +82,6 @@ For instance, QED uses `#exec` to import user configuration directly into
 its Settings instance.
 
     confection(:qed, profile_name).exec
-
-An alternative to adding entries to a project's master configuration file,
-configurations can be placed in individual files in a project's `task/`
-directory. These must follow the naming scheme  `<tool>-<profile>.<type>`
-or in some cases `<profile>.<tool>` (e.g `test.rake`).
-
-Accessing configuration in the task directory works in the exact same fashion
-as those in the master confgiuration file.
 
 
 ## Release Notes

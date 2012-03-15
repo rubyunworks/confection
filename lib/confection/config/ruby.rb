@@ -4,6 +4,11 @@ module Confection
 
     # Ruby script configuration.
     #
+    # Note this is note currently being used, as it was intended to be used
+    # with configuration that pull there source from a separate file. But that
+    # idea has been deprected. We'll leave this here for now, just in case it
+    # is resurrected.
+    #
     class Ruby < Base
 
       EXTENSIONS = %w{.rb .rbx rb rbx ruby}

@@ -58,7 +58,8 @@ module Confection
     def config(tool, *args, &block)
       options = (Hash === args.last ? args.pop : {})
 
-      text = args.shift
+      text = args.shift    
+      text = text.tabto(0) if text
 
       raise ArgumentError, "too many arguments"      if args.first
       raise SyntaxError,   "nested profile sections" if options[:profile] && @_options[:profile]

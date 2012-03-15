@@ -1,15 +1,25 @@
 module Confection
 
+  # Project configuration.
   #
   class Project
 
-    #
-    PATTERN = '{task/,{.,}confile{.rb,}}'
+    include Enumerable
 
+    #
+    # Configuration file pattern.
+    #
+    PATTERN = '{.,}confile{.rb,}'
+
+    #
+    # Per library cache.
+    #
     def self.cache
       @cache ||= {}
     end
 
+    #
+    #
     #
     def self.load(lib=nil)
       if lib
@@ -44,24 +54,36 @@ module Confection
     end
 
     #
+    # Initialize new ProjectConfig.
+    #
+    # @param [String] root
+    #   Project root directory.
+    #
     def initialize(root)
       @root  = root
-      @store = Store.new(*sources)
     end
 
+    #
+    # Project root directory.
+    #
     attr :root
 
     alias :directory :root
 
-    attr :store
+    #
+    # Configuration store tracks a project's confirguration entries.
+    #
+    def store
+      @store ||= Store.new(*source)
+    end
 
     #
-    def sources
+    def source
       Dir.glob(File.join(root, PATTERN), File::FNM_CASEFOLD)
     end
 
     #
-    #
+    # List of configuration profiles.
     #
     def profiles(tool)
       store.profiles(tool)
@@ -70,7 +92,7 @@ module Confection
     #
     # Project properties.
     #
-    # @todo Use separate class.
+    # @todo Use cascading class, e.g. Confstruct.
     #
     def properties
       dotruby = File.join(directory,'.ruby')
@@ -82,23 +104,33 @@ module Confection
       end
     end
 
-    include Enumerable
+    #
+    # Create a configuration controller.
+    #
+    # @param [Object] scope
+    #   Context for which controller is being created.
+    #
+    # @param [Symbol] tool
+    #   The tool of the configuration to select.
+    #
+    def controller(scope, tool, options={})
+      profile = options[:profile]
+      configs = store.lookup(tool, profile)
+      Controller.new(scope, *configs)
+    end
 
+    #
+    # Iterate of each configurations.
     #
     def each(&block)
       store.each(&block)
     end
 
     #
+    # The number of configurations.
+    #
     def size
       store.size
-    end
-
-    #
-    def controller(scope, tool, options={})
-      profile = options[:profile]
-      configs = store.lookup(tool, profile)
-      Controller.new(scope, *configs)
     end
 
   end

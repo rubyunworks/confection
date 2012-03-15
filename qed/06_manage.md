@@ -1,7 +1,8 @@
 # Manage
 
-The Confection has some convenice class methods for working
-with the configuration of the current project.
+The Confection module has some convenice class methods for working
+with the configuration of the *current* project --the one relative
+to the current working directory.
 
 The current project root directory can be had via the `current_directory`
 method.
@@ -25,9 +26,10 @@ method.
     Confection.profiles(:file)
 
 The number of configurations in the current project can be had via
-the `size` method.
+the `size` method. (This is the number of configurations we have
+defined in our test fixture.)
 
-    Confection.size.assert == 4
+    Confection.size.assert == 3
 
 And we can loop through each configuration via the `each` method.
 
