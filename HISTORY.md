@@ -2,7 +2,7 @@
 
 ## 0.2.0 | 2012-03-11
 
-The API has change so as to no longer use #method_missing magic.
+The API has changed and no longer uses #method_missing magic.
 Instead the `config` method is used to define a configuration.
 In addition Confection now supports profiles via either a
 block clause or via a second argument, as well as the ability
