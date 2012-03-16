@@ -30,3 +30,4 @@ def configure(tool, *options)
 end
 
 # Copyright (c) 2011 Rubyworks (BSD-2-Clause)
+

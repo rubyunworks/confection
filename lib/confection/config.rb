@@ -15,11 +15,11 @@ module Confection
     # Types are checked in reverse order of definition so that
     # subclasses of other types have precedence.
     #
-    def self.factory(tool, options)
+    def self.factory(tool, profile, data, &block)
       object = nil
       types.reverse_each do |c|
-        if c.apply?(tool, options)
-          object = c.new(tool, options)
+        if c.apply?(tool, profile, data, &block)
+          object = c.new(tool, profile, data, &block)
           break(object)
         end
       end
@@ -31,10 +31,7 @@ module Confection
 end
 
 require 'confection/config/base'
-require 'confection/config/undef'
 require 'confection/config/text'
-require 'confection/config/ini'
-require 'confection/config/json'
-require 'confection/config/yaml'
-require 'confection/config/ruby'
+require 'confection/config/data'
 require 'confection/config/block'
+

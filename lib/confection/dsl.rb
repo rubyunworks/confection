@@ -56,89 +56,58 @@ module Confection
     # @todo Clean this code up.
     #
     def config(tool, *args, &block)
-      options = (Hash === args.last ? args.pop : {})
+      case args.first
+      when Symbol
+        profile = args.shift
+      when String
+        profile = args.shift unless args.first.index("\n")
+      end
 
-      text = args.shift    
-      text = text.tabto(0) if text
+      case args.first
+      when Hash
+        data = args.shift
+        from = data[:from] # special key
+      when Proc
+        data = args.shift
+      when String
+        data = args.shift
+        data = data.tabto(0)
+      end
 
       raise ArgumentError, "too many arguments"      if args.first
-      raise SyntaxError,   "nested profile sections" if options[:profile] && @_options[:profile]
-      raise ArgumentError, "tool option not allowed" if options[:tool]
-      raise ArgumentError, "use text argument or :text option" if options[:text] && text
+      raise SyntaxError,   "nested profile sections" if profile && @_options[:profile]
       #raise ArgumentError, "use block or :from  setting" if options[:from]  && block
 
-      return config_import(tool, options, &block) if options[:from]
+      profile = @_options[:profile] unless profile
 
-      original_state = @_options.dup
+      if from
+        @_store.import(tool, profile, data, &block)
+        data = nil
+        return unless block
+      end
 
-      @_options.update(options)
+      #original_state = @_options.dup
 
+      if data && block
+        raise ArgumentError, "must use data or block, not both"
+      end
+    
       #@_options[:tool]  = tool
-      @_options[:block] = block if block
-      @_options[:text]  = text  if text
+      #@_options[:block] = block if block
+      #@_options[:data]  = data  if data
+      #@_options[:text]  = text  if text
 
-      raise ArgumentError, "use text or block" if text && block
+      #raise ArgumentError, "use text or block" if text && block
+      #raise ArgumentError, "use block or data" if block && data
+      #raise ArgumentError, "use data or text"  if data && text
 
-      @_store << Config.factory(tool, @_options)
+      @_store << Config.factory(tool, profile, data, &block)
 
-      @_options = original_state
+      #@_options = original_state
     end
 
-    # TODO: should probably use `:default` profile instead of `nil`.
+    # TODO: use `:default` profile instead of `nil` ?
 
-    # TODO: most of this code belongs in Store, not here.
-
-    # TODO: rename :from to :gem and support remote repo :git, etc.
-
-    #
-    # Import configuration from another project's configuration file.
-    #
-    # @todo Better method method name for #remote.
-    #
-    def config_import(tool, options={}, &block)
-      from_tool    = options[:from_tool]    || tool
-      from_profile = options[:from_profile] || options[:profile]
-
-      raise ArgumentError, "nested profile sections" if options[:profile] && @_options[:profile]
-
-      profile = options[:profile] || @_options[:profile]
-
-      if from = options[:from]
-        project = Project.load(from)
-        store   = project ? project.store : nil
-      else
-        store = @_store
-      end
-
-      raise "no configuration found in `#{from}'" unless store
-
-      configs = store.lookup(from_tool, from_profile)
-
-      configs.each do |config|
-        new_config  = config.copy(:tool=>tool, :profile=>profile)
-
-        #new_options = @_options.dup
-        #new_options[:tool]    = tool
-        #new_options[:profile] = profile
-        #new_options[:block]   = config.block
-        #new_options[:text]    = config.text
-
-        # not so sure about this one
-        if Config::Text === new_config
-          new_config.text += ("\n" + options[:text].to_s) if options[:text]
-        end
-
-        @_store << new_config
-      end
-
-      if block
-        options[:profile] = profile
-        options[:block]   = block
-
-        @_store << Config::Block.new(tool, options)
-      end
-    end
- 
     #
     # Evaluate script directory into current scope.
     #

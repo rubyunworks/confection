@@ -20,3 +20,14 @@ to a Rakefile:
 
   confection('rake').call
 
+ANALYSIS:
+
+  config :qed, :coverage, -> do
+    name 'Tommy'
+    age 42
+  end
+
+  config :qed, :coverage do
+    puts "Scripted"
+  end
+

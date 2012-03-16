@@ -27,10 +27,10 @@ Evaluation of a configuration file, populate the Confection.config instance.
     sample.class    #=> Confection::Config::Block
 
 A profile can be used as a means fo defining multiple configuration options
-for a single tool. This can be done by setting the `:profile` option.
+for a single tool. This can be done by setting the second argument to a Symbol.
 
     dsl.__eval__(<<-HERE)
-      config :sample2, :profile=>:opt1 do
+      config :sample2, :opt1 do
         "block code"
       end
     HERE

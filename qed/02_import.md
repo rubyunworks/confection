@@ -15,13 +15,13 @@ using the `:from` option.
 
 The configuration can also be imported from a different profile.
 
-    dsl.config :qed, :profile=>:coverage, :from=>'qed', :from_profile=>:simplecov
+    dsl.config :qed, :coverage, :from=>'qed', :profile=>:simplecov
 
     store.size.assert == 2
 
 Although it will rarely be useful, it may also be imported from another tool.
 
-    dsl.config :example, :from=>'qed', :from_tool=>:sample
+    dsl.config :example, :from=>'qed', :tool=>:sample
 
 Imported configurations can also be augmented via a block.
 
@@ -29,7 +29,7 @@ Imported configurations can also be augmented via a block.
 
     dsl = Confection::DSL.new(store)
 
-    dsl.config :qed, :from=>'qed', :from_profile=>:simplecov do
+    dsl.config :qed, :from=>'qed', :profile=>:simplecov do
       # additional code here
     end
 

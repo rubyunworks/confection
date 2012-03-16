@@ -3,28 +3,18 @@ module Confection
   #
   module Config
 
-    # Plain text configuration.
+    # Text configuration.
     #
     class Text < Base
 
-      EXTENSIONS = %w{.txt txt .text text}
-
-      def self.apply?(too, options)
-        return true if EXTENSIONS.include?(options[:type].to_s)
-        return true if EXTENSIONS.include?(File.extname(options[:file].to_s))
-        return true if options[:text]
+      def self.apply?(tool, profile, data, &block)
+        return true if String === data
         return false
       end
 
       #
-      def initialize(tool, options={})
-        super(tool, options)
-        self.text = options[:text]
-      end
-
-      #
       def text
-        @text ||= (file && File.read(file))
+        data
       end 
 
       #
@@ -60,17 +50,6 @@ module Confection
       # Returns the configuration text.
       #
       alias to_s text
-
-      #
-      #def copy(opts={})
-      #  tool = opts[:tool] || @tool
-      #
-      #  opts[:text]    ||= text
-      #  opts[:profile] ||= profile
-      #  opts[:type]    ||= type
-      #
-      #  self.class.new(tool, opts)
-      #end
 
     end
 

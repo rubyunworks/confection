@@ -17,7 +17,7 @@ module Confection
       # Override this in subclasses. If should return `true` if
       # the arguments provided indicate the Config class applies.
       #
-      def self.apply?(tool, options)
+      def self.apply?(tool, profile, data, &block)
         false
       end
 
@@ -26,21 +26,11 @@ module Confection
       # which means they are associated with one and only one config entry or
       # file.
       #
-      def initialize(tool, options)
-        initialize_require
-
+      def initialize(tool, profile, data, &block)
         self.tool    = tool
-        self.profile = options[:profile]
-        self.file    = options[:file]
-
-        # only set the type if given b/c file also sets the type
-        self.type    = options[:type] if options[:type]
-      end
-
-      #
-      # Override this no-op in subclass if extrnal library is needed.
-      #
-      def initialize_require
+        self.profile = profile
+        self.data    = data
+        self.block   = block if block
       end
 
       # The name of tool being configured.
@@ -57,26 +47,19 @@ module Confection
         @profile = name.to_sym if name
       end
 
-      # Configuration type.
-      attr :type
+      #
+      attr :data
 
-      def type=(type)
-        @type = type.to_sym
+      def data=(data)
+        @data = data
       end
 
-      # The `file` attribute is set to the path of source file if the
-      # configuration came from a dedicated configuration file.
-      attr :file
+      #
+      attr :block
 
-      def file=(path)
-        @file = path
-        self.type = File.extname(path).sub(/\./, '') if path
+      def block=(proc)
+        @block = proc.to_proc
       end
-
-      # Treat as YAML and load.
-      #def yaml
-      #  @yaml ||= YAML.load(to_s)
-      #end
 
       #
       # Copy the configuration with alterations.
@@ -96,7 +79,7 @@ module Confection
       # Ruby 1.9 defines #inspect as #to_s, ugh.
       #
       def inspect
-        "#<#{self.class.name}:#{object_id} @tool=%s @profile=%s @type=%s>" % [tool.inspect, profile.inspect, type.inspect]
+        "#<#{self.class.name}:#{object_id} @tool=%s @profile=%s>" % [tool.inspect, profile.inspect]
       end
 
     end

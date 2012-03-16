@@ -9,15 +9,9 @@ module Confection
     class Block < Base
 
       #
-      def self.apply?(too, options)
-        return true if options[:block]
+      def self.apply?(tool, profile, data, &block)
+        return true if block
         return false
-      end
-
-      #
-      def initialize(tool, options={})
-        super(tool, options)
-        self.block = options[:block]
       end
 
       #
@@ -32,8 +26,7 @@ module Confection
       #   Configuration procedure.
       #
       def block=(proc)
-        raise TypeError, "must be Proc object" unless proc.respond_to?(:to_proc)
-        @block = proc
+        @block = proc.to_proc
       end
 
       #

@@ -1,9 +1,9 @@
 # Config Classes
 
-There are two basic classes of configuration: block and text. Block
+There are three classes of configuration: test, data and block. Block
 configurations encapsulate a block of Ruby code. Text configurations
 simply contain a text string --whatever that string may represent.
-More specialized configuration types, such as YAML are subclasses.
+Data configuration contantain a table of key-value pairs.
 
 ## Block Configuration
 
@@ -68,23 +68,23 @@ that accepts option parameters for changing the tool or profile of the copy.
     alt.profile.assert == :alt
 
 
-## YAML Configuration
+## Data Configuration
 
-YAML-based configuration.
+Data-based configuration.
 
-    config = confection(:example, :profile=>:yaml).first
+    config = confection(:example, :data).first
 
-    Confection::Config::Yaml.assert === config
+    Confection::Config::Data.assert === config
 
     result = config.to_data
 
-    result.assert == {'name'=>'Tommy', 'age'=>42 }
+    result.assert == {:name=>'Tommy', :age=>42 }
 
-For a YAML-based configuration `#call` does the same thing as `#to_data`.
+For a Data-based configuration `#call` does the same thing as `#to_data`.
 
     result = config.call
 
-    result.assert == {'name'=>'Tommy', 'age'=>42 }
+    result.assert == {:name=>'Tommy', :age=>42 }
 
 As with the other configuration classes, we may also convert this call
 into a Proc instance.

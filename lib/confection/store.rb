@@ -60,7 +60,7 @@ module Confection
     # Add as configuratio to the store.
     #
     def <<(conf)
-      raise TypeError unless Config::Base === conf
+      raise TypeError, "not a configuration instance -- `#{conf}'" unless Config::Base === conf
       @list << conf
     end
 
@@ -120,6 +120,48 @@ module Confection
     #  configs = lookup(name, profile)
     #  Controller.new(scope, *configs)
     #end
+
+    #
+    # Import configuration from another project.
+    #
+    def import(tool, profile, options, &block)
+      from_tool    = options[:tool]    || tool
+      from_profile = options[:profile] || profile
+
+      case from = options[:from]
+      when String, Symbol
+        project = Project.load(from.to_s)
+        store   = project ? project.store : nil
+      else
+        from  = '(self)'
+        store = self
+      end
+
+      raise "no configuration found in `#{from}'" unless store
+
+      configs = store.lookup(from_tool, from_profile)
+
+      configs.each do |config|
+        new_config = config.copy(:tool=>tool, :profile=>profile)
+
+        #new_options = @_options.dup
+        #new_options[:tool]    = tool
+        #new_options[:profile] = profile
+        #new_options[:block]   = config.block
+        #new_options[:text]    = config.text
+
+        # not so sure about this one
+        if Config::Text === new_config
+          new_config.text += ("\n" + options[:text].to_s) if options[:text]
+        end
+
+        self << new_config
+      end
+
+      #if block
+      #  self << Config::Block.new(tool, profile, nil, &block)
+      #end
+    end
 
   end
 
