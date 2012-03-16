@@ -10,13 +10,11 @@ copyrights:
   license: BSD-2-Clause
 requirements:
 - name: finder
-- name: json
+- name: facets
+- name: blankslate
   groups:
   - optional
-  development: true
-- name: inifile
-  groups:
-  - optional
+  - test
   development: true
 - name: detroit
   groups:
