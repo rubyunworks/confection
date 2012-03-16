@@ -69,6 +69,7 @@ module Confection
         from = data[:from] # special key
       when Proc
         data = args.shift
+        # TODO convert data into OpenHash like object
       when String
         data = args.shift
         data = data.tabto(0)
@@ -101,7 +102,7 @@ module Confection
       #raise ArgumentError, "use block or data" if block && data
       #raise ArgumentError, "use data or text"  if data && text
 
-      @_store << Config.factory(tool, profile, data, &block)
+      @_store << Config.new(tool, profile, data, &block)
 
       #@_options = original_state
     end

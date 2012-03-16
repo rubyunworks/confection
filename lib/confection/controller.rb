@@ -39,7 +39,23 @@ module Confection
     def call(*args)
       result = nil
       each do |config|
-        result = config.call(*args) #if config.call?
+        result = config.call(*args)
+      end
+      result
+    end
+
+    #
+    # Special configuration call.
+    #
+    def configure
+      result = nil
+      each do |config|
+        case config.arity
+        when 0
+          exec
+        when 1
+          result = config.call(@scope)
+        end
       end
       result
     end
@@ -108,24 +124,35 @@ module Confection
     # Configurations texts joins together the contents of each
     # configuration separated by two newlines (`\n\n`).
     #
-    def text
+    def to_s
       txt = []
       @configs.each do |c|
-        txt << c.text if c.text
+        txt << c.to_s #if c.text
       end
       txt.join("\n\n")
     end
 
-    alias to_s text
+    alias text to_s
 
     #
-    # Treat configurations as YAML mappings, load, merge and return.
     #
-    def yaml
-      @configs.inject({}) do |h, c|
-        h.merge(c.yaml)
+    #
+    def to_h
+      hsh = {}
+      @configs.each do |c|
+        hsh.merge!(c.to_h)
       end
+      hsh
     end
+
+    ##
+    ## Treat configurations as YAML mappings, load, merge and return.
+    ##
+    #def yaml
+    #  @configs.inject({}) do |h, c|
+    #    h.merge(c.yaml)
+    #  end
+    #end
 
     #
     # Inspection string for controller.
@@ -137,11 +164,11 @@ module Confection
   end
 
   #
-  class NullController
-    def exec(*); end
-    def call(*); end
-    def text; ''; end
-    alias to_s text
-  end
+  #class NullController
+  #  def exec(*); end
+  #  def call(*); end
+  #  def text; ''; end
+  #  alias to_s text
+  #end
 
 end

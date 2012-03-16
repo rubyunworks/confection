@@ -8,9 +8,11 @@ require 'yaml'
 require 'ostruct'
 
 #require 'confection/basic_object'
+require 'confection/core_ext'
 require 'confection/project'
 require 'confection/store'
 require 'confection/dsl'
+require 'confection/hash_builder'
 require 'confection/config'
 require 'confection/controller'
 require 'confection/manage'
@@ -26,7 +28,7 @@ end
 
 def configure(tool, *options)
   controller = Confection.controller(self, tool, *options)
-  controller.call  # default action
+  controller.configure
 end
 
 # Copyright (c) 2011 Rubyworks (BSD-2-Clause)

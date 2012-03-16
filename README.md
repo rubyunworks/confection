@@ -53,7 +53,7 @@ native support for Confection.
     end
 
     config :qedoc do
-      self.title = "#{title} Demonstrandum"
+      title "#{title} Demonstrandum"
     end
 
 Now we have configuration for both the rake tool and the qed test tool in

@@ -12,7 +12,7 @@ in a project's master configuration file.
 
     config = confection(:block).first
 
-    Confection::Config::Block.assert === config
+    Confection::Config.assert === config
 
 A Ruby-based configuration file, like our example, can be called via the `#call`
 method. This evaluates the code at the TOPLEVEL, like standard `Kernel.load`
@@ -41,7 +41,7 @@ Text-based configurations
 
     config = confection(:text).first
 
-    Confection::Config::Text.assert === config
+    Confection::Config.assert === config
 
     result = config.to_s
 
@@ -74,17 +74,19 @@ Data-based configuration.
 
     config = confection(:example, :data).first
 
-    Confection::Config::Data.assert === config
+    Confection::Config.assert === config
 
-    result = config.to_data
+    result = config.to_h
 
     result.assert == {:name=>'Tommy', :age=>42 }
 
 For a Data-based configuration `#call` does the same thing as `#to_data`.
 
-    result = config.call
+    data = OpenStruct.new
 
-    result.assert == {:name=>'Tommy', :age=>42 }
+    result = config.call(data)
+
+    data.to_h.assert == {:name=>'Tommy', :age=>42 }
 
 As with the other configuration classes, we may also convert this call
 into a Proc instance.

@@ -9,7 +9,7 @@ config :text do
 end
 
 config :example, :data do |ex|
-  ex.name 'Tommy'
-  ex.age  42
+  ex.name = 'Tommy'
+  ex.age  = 42
 end
 

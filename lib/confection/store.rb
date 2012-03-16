@@ -60,7 +60,7 @@ module Confection
     # Add as configuratio to the store.
     #
     def <<(conf)
-      raise TypeError, "not a configuration instance -- `#{conf}'" unless Config::Base === conf
+      raise TypeError, "not a configuration instance -- `#{conf}'" unless Config === conf
       @list << conf
     end
 
@@ -151,8 +151,8 @@ module Confection
         #new_options[:text]    = config.text
 
         # not so sure about this one
-        if Config::Text === new_config
-          new_config.text += ("\n" + options[:text].to_s) if options[:text]
+        if String === new_config.value
+          new_config.value += ("\n" + options[:text].to_s) if options[:text]
         end
 
         self << new_config

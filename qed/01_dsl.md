@@ -24,7 +24,7 @@ Evaluation of a configuration file, populate the Confection.config instance.
     sample = store.last
     sample.tool     #=> :sample1
     sample.profile  #=> nil
-    sample.class    #=> Confection::Config::Block
+    sample.class    #=> Confection::Config
 
 A profile can be used as a means fo defining multiple configuration options
 for a single tool. This can be done by setting the second argument to a Symbol.
@@ -65,5 +65,5 @@ string is passed to the `config` method will be a text-based configuration.
     sample = store.last
     sample.tool        #=> :sample3
     sample.profile     #=> nil
-    sample.text.strip.assert == "text config"
+    sample.to_s.strip.assert == "text config"
 
