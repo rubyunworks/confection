@@ -5,14 +5,14 @@
 The API has change so as to no longer use #method_missing magic.
 Instead the `config` method is used to define a configuration.
 In addition Confection now supports profiles via either a
-block clause or `:profile` option, as well as the ability
+block clause or via a second argument, as well as the ability
 to import configurations from other projects.
 
 Changes:
 
 * Use #config method instead of method_missing trick.
 * Add support for configuration profiles.
-* Add #text, #yaml, #ini methods for working with non-Ruby configs.
+* Add #confect method to automatically handle typical configuration.
 
 
 ## 0.1.0 | 2011-11-17
