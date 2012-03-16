@@ -47,7 +47,7 @@ revision: 0
 created: '2011-11-06'
 summary: Multi-tenant configuration for Ruby
 title: Confection
-version: 0.2.0
+version: 0.2.1
 name: confection
 description: Confection is a multi-tenant configuration system for Ruby projects.
 organization: Rubyworks
