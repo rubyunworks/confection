@@ -2,11 +2,10 @@
 # careful core extensions.
 
 require 'facets/string/tabto'
+require 'facets/to_hash'
 
 #require 'facets/ostruct/to_h'  # TODO: Newer version of facets.
-
 require 'ostruct'
-
 class OpenStruct
   def to_h
     @table.dup

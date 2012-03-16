@@ -123,8 +123,15 @@ project in a future version.)
 
 ### Core Extensions
 
-Confection uses two core extensions, String#tabto and OpenStruct#to_h. These come
-from the Ruby Facets project to ensure a high standard of interoperability.
+Confection uses two core extensions, `#to_h`, which apllies a few different
+classes, `String#tabto`. These come from Ruby Facets to ensure a high standard 
+of interoperability. 
+
+Both of these methods have been suggested for inclusion in Ruby proper.
+Please head over to Ruby Issue Tracker and add your support.
+
+* http://bugs.ruby-lang.org/issues/749
+* http://bugs.ruby-lang.org/issues/6056
 
 
 ## Release Notes
