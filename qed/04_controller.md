@@ -9,7 +9,7 @@ An empty controller can be made simply enough.
 
 The #confection method simple calls this with the configs it finds.
 
-    ctrl = confection(:block)
+    ctrl = config(:block)
 
     Confection::Controller.assert === ctrl
 
@@ -60,7 +60,7 @@ the procedure to be evaluated in other bindings as needed.
 For text configuration, the controller will concat each configuration's 
 content.
 
-    ctrl = confection(:text)
+    ctrl = config(:text)
 
     text = ctrl.to_s
 

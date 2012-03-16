@@ -5,11 +5,38 @@ module Confection
   class DSL < Module #BasicObject
 
     #
-    # @param [Store] Configuration storage instance.
+    # Create new DSL instance and parse file.
     #
-    def initialize(store)
+    # @todo Does the exception rescue make sense here?
+    #
+    def self.parse(store, file)
+      dsl = new(store, file)
+      begin
+        text = File.read(file)
+      rescue => e
+        raise e if $DEBUG
+        warn e.message
+      end
+      dsl.instance_eval(text, file)
+    end
+
+    #
+    # Initialize new DSL object.
+    #
+    # @param [Store] store
+    #   The configuration storage instance.
+    #
+    # @param [String] file
+    #   Configuration file to load.
+    #
+    def initialize(store, file=nil)
       @_store   = store
-      @_options = {}
+      @_file    = file
+
+      @_contest = Object.new
+      @_context.extend self
+
+      @_options = {}     
     end
 
     # TODO: Separate properties from project metadata ?
@@ -92,17 +119,8 @@ module Confection
       if data && block
         raise ArgumentError, "must use data or block, not both"
       end
-    
-      #@_options[:tool]  = tool
-      #@_options[:block] = block if block
-      #@_options[:data]  = data  if data
-      #@_options[:text]  = text  if text
 
-      #raise ArgumentError, "use text or block" if text && block
-      #raise ArgumentError, "use block or data" if block && data
-      #raise ArgumentError, "use data or text"  if data && text
-
-      @_store << Config.new(tool, profile, data, &block)
+      @_store << Config.new(tool, profile, @_context, data, &block)
 
       #@_options = original_state
     end
@@ -120,19 +138,16 @@ module Confection
       instance_eval(::File.read(file), file) if file
     end
 
-    #
-    # Cached binding.
-    #
-    def __binding__
-      @_binding ||= binding
-    end
+    ##
+    ## Cached binding.
+    ##
+    #def __binding__
+    #  @_binding ||= binding
+    #end
 
-    #
-    #
-    #
-    def __eval__(code, file=nil)
-      Kernel.eval(code, __binding__, file || '(eval)')
-    end
+    #def __eval__(code, file=nil)
+    #  Kernel.eval(code, __binding__, file || '(eval)')
+    #end
 
   end
 

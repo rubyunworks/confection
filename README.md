@@ -36,14 +36,14 @@ In our Rakefile:
 
     $ cat Rakefile
     require 'confection'
-    confection(:rake).call
+    confection(:rake, '*').load
 
 Now you might wonder why the heck you would do this. That's where the *multi-tenancy*
 comes into play. Let's add another configuration, and this time for a tool that has
 native support for Confection.
 
     $ cat Confile
-    title = "myapp"
+    title = "MyApp"
 
     config :rake do
       desc 'generate yard docs'
@@ -52,18 +52,25 @@ native support for Confection.
       end
     end
 
-    config :qedoc do
-      title "#{title} Demonstrandum"
+    config :qedoc do |doc|
+      doc.title = "#{title} Demonstrandum"
     end
 
-Now we have configuration for both the rake tool and the qed test tool in
+Now we have configuration for both the rake tool and the qedoc tool in
 a single file. Thus we gain the advantage of reducing the file count of our 
 project while pulling our tool configurations together into one place.
 Moreover, these configurations can potentially share settings as demonstrated
 here via the `title` variable.
 
 Confection also supports profiles, either via a `profile` block or via a
-`:profile` option.
+second config argument.
+
+    config :qed, :cov do
+      require 'simplecov'
+      ...
+    end
+
+Or,
 
     profile :cov
       config :qed do
@@ -72,16 +79,52 @@ Confection also supports profiles, either via a `profile` block or via a
       end
     end
 
-Using Confection in your libraries is very simple. As you can see from our
-example Rakefile. The `#confection` method is used to get a handle on a named
-configuration. With it you have two options, `#call`, `#exec` or `#load`.
-The first calls the block which is evaluated in the context in which it was
-defined. This is recommended. The second will evaluate the block in the 
-context of the caller and the last in the context of the toplevel.
+Using Confection in your libraries is very simple, as can be seen from our
+Rakefile example. The `#confection` method (alias `#config`) is used to get
+a handle on a named configuration. With it you have a few options, `#call`,
+`#exec` or `#load`, `#to_s` or `#to_h`.
+
+The `#call` method evaluates a config's block in a separate per-configuration
+file context in which it was defined. This is recommended. The `#exec` method,
+on the other hand, will evaluate the block in the  context of the caller. Where 
+as the `#load` method evaluates the block in the toplevel context.
+
 For instance, QED uses `#exec` to import user configuration directly into
 its Settings instance.
 
     confection(:qed, profile_name).exec
+
+The last two methods, `#to_s` and `#to_h` are used for text-based or hash-based
+confgurations. The `qedoc` configuration above is a good example of the later.
+It can be converted directly into a Hash.
+
+    confection(:qedoc, :cov).to_h  #=> {:title => "MyApp Demonstration"}
+
+Lastly, there is the `#confect` method (alias `#configure`). This is just like the
+`#confection` method, but automatically invokes `configure(self)` on each
+selected configuration. In most cases that's exactly what is needed, so it 
+saves having to make the additional invocation on the return value of `#confection`.
+
+
+## Dependencies
+
+### Libraries
+
+Confection depends on the [Finder](http://rubyworks.github.com/finder) library
+to provide reliable load path and Gem searching. This is used when importing
+configurations from extrnal projects.
+
+Confection also depends on [Ruby Facets](http://rubyworks.github.com/facets)
+for just a few very useful core extensions.
+
+To use Confection on Ruby 1.8 series, the `BlankSlate` library is also needed
+in order to emulate Ruby's BasicObject. (This may change to the `Backports`
+project in a future version.)
+
+### Core Extensions
+
+Confection uses two core extensions, String#tabto and OpenStruct#to_h. These come
+from the Ruby Facets project to ensure a high standard of interoperability.
 
 
 ## Release Notes

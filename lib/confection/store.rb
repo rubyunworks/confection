@@ -42,15 +42,20 @@ module Confection
 
     #
     def parse(file)
-      dsl = DSL.new(self)
-      dsl.__eval__(::File.read(file), file)
+      DSL.parse(self, file)
     end
 
+    #
+    # Iterate over each configurations.
     #
     def each(&block)
       @list.each(&block)
     end
 
+    #
+    # The number of configurations.
+    #
+    # @return [Fixnum] config count
     #
     def size
       @list.size
@@ -72,13 +77,21 @@ module Confection
     end
 
     #
-    # Lookup configuration by tool and optionally profile name.
+    # Lookup configuration by tool and profile name.
+    #
+    # @todo Future versions should allow this to handle regex and fnmatches.
     #
     def lookup(tool, profile=nil)
-      profile = profile.to_sym if profile
+      if profile == '*'
+        select do |c|
+          c.tool.to_sym == tool.to_sym
+        end
+      else
+        profile = profile.to_sym if profile
 
-      select do |c|
-        c.tool.to_sym == tool.to_sym && (profile ? c.profile == profile : true) 
+        select do |c|
+          c.tool.to_sym == tool.to_sym && c.profile == profile
+        end
       end
     end
 

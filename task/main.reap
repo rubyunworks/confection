@@ -4,12 +4,12 @@ ignore 'work', '.yardoc', 'doc', 'log', 'pkg', 'tmp', 'web'
 
 desc "run specs"
 task "spec" do
-  cmd = "confectionless='true' qed"
+  cmd = "config='legacy' qed"
   sh cmd
 end
 
 task "spec:cov" do
-  cmd = "confectionless='true' qed -p coverage"
+  cmd = "config='legacy' qed -p coverage"
   sh cmd
 end
 

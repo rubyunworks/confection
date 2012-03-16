@@ -1,7 +1,8 @@
 module Confection
 
-  # The Controller class is used to encapsulate the two types of invocation
-  # that are posible on configuration blocks.
+  # The Controller class is used to encapsulate the various methods of invocation
+  # that are posible on configuration blocks. It applies those invocations 
+  # across it's set of configurations.
   #
   class Controller
 

@@ -8,12 +8,12 @@ The DSL class handle evaluation of a project configuration file.
 
 The DSL instance will have a cached binding.
 
-   dsl.__binding__ == dsl.__binding__
+   #dsl.__binding__ == dsl.__binding__
 
-Under the hood, the `__eval__` method is used to evaluate a configuration
-file.
+We can use the `#instance_eval` method to evaluate a configuration for our
+demonstration.
 
-    dsl.__eval__(<<-HERE)
+    dsl.instance_eval(<<-HERE)
       config :sample1 do
         "block code"
       end
@@ -29,7 +29,7 @@ Evaluation of a configuration file, populate the Confection.config instance.
 A profile can be used as a means fo defining multiple configuration options
 for a single tool. This can be done by setting the second argument to a Symbol.
 
-    dsl.__eval__(<<-HERE)
+    dsl.instance_eval(<<-HERE)
       config :sample2, :opt1 do
         "block code"
       end
@@ -41,7 +41,7 @@ for a single tool. This can be done by setting the second argument to a Symbol.
 
 Or it can be done by using a `profile` block.
 
-    dsl.__eval__(<<-HERE)
+    dsl.instance_eval(<<-HERE)
       profile :opt1 do
         config :sample2 do
           "block code"
@@ -56,7 +56,7 @@ Or it can be done by using a `profile` block.
 Different types of configuration can be defined. For instance, if a multi-line
 string is passed to the `config` method will be a text-based configuration.
 
-    dsl.__eval__(<<-HERE)
+    dsl.instance_eval(<<-HERE)
       config :sample3, %{
         text config
       }

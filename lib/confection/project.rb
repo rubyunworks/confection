@@ -2,6 +2,8 @@ module Confection
 
   # Project configuration.
   #
+  # @todo Rename to `ProjectConfig` or ?
+  #
   class Project
 
     include Enumerable
@@ -19,10 +21,18 @@ module Confection
     end
 
     #
+    # Get project configuration from another library.
     #
+    # This method uses the Finder gem.
+    #
+    # @param [String] lib
+    #   Library name.
+    #
+    # @return [Project,nil] Located project.
     #
     def self.load(lib=nil)
       if lib
+        lib = lib.to_s
         return cache[lib] if cache.key?(lib)
         cache[lib] ||= (
           config_path = Find.path(PATTERN, :from=>lib).first
@@ -66,8 +76,13 @@ module Confection
     #
     # Project root directory.
     #
+    # @return [String] project's root directory
+    #
     attr :root
 
+    #
+    # Alias for #root.
+    #
     alias :directory :root
 
     #
@@ -78,12 +93,18 @@ module Confection
     end
 
     #
+    # The file path of the project's configuration file.
+    #
+    # @return [String] path to configuration file
+    #
     def source
       Dir.glob(File.join(root, PATTERN), File::FNM_CASEFOLD)
     end
 
     #
     # List of configuration profiles.
+    #
+    # @return [Array] profile names
     #
     def profiles(tool)
       store.profiles(tool)
@@ -120,7 +141,7 @@ module Confection
     end
 
     #
-    # Iterate of each configurations.
+    # Iterate over each configurations.
     #
     def each(&block)
       store.each(&block)
@@ -128,6 +149,8 @@ module Confection
 
     #
     # The number of configurations.
+    #
+    # @return [Fixnum] config count
     #
     def size
       store.size

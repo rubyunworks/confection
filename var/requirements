@@ -1,7 +1,6 @@
 ---
 - finder
-- json    (optional)
-- inifile (optional)
+- facets   # ultimately 2.9.4+
 - detroit (build)
 - qed     (test)
 - ae      (test)
