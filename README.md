@@ -95,7 +95,7 @@ its Settings instance.
     confection(:qed, profile_name).exec
 
 The last two methods, `#to_s` and `#to_h` are used for text-based or hash-based
-confgurations. The `qedoc` configuration above is a good example of the later.
+configurations. The `qedoc` configuration above is a good example of the later.
 It can be converted directly into a Hash.
 
     confection(:qedoc, :cov).to_h  #=> {:title => "MyApp Demonstration"}
@@ -112,7 +112,7 @@ saves having to make the additional invocation on the return value of `#confecti
 
 Confection depends on the [Finder](http://rubyworks.github.com/finder) library
 to provide reliable load path and Gem searching. This is used when importing
-configurations from extrnal projects.
+configurations from external projects.
 
 Confection also depends on [Ruby Facets](http://rubyworks.github.com/facets)
 for just a few very useful core extensions.
@@ -123,7 +123,7 @@ project in a future version.)
 
 ### Core Extensions
 
-Confection uses two core extensions, `#to_h`, which apllies a few different
+Confection uses two core extensions, `#to_h`, which applies a few different
 classes, `String#tabto`. These come from Ruby Facets to ensure a high standard 
 of interoperability. 
 
