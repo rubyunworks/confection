@@ -9,9 +9,19 @@ module Confection
     include Enumerable
 
     #
-    # Configuration file pattern.
+    # Configuration file pattern. The standard configuration file name is
+    # `Config.rb`, and that name should be used in most cases. However, 
+    # `.config.rb` can also be use and will take precedence if found.
+    # Conversely, `config.rb` (lowercase form) can also be used but has
+    # the least precedence.
     #
-    PATTERN = '{.,}confile{.rb,}'
+    # Config files looked for in the order or precedence:
+    #
+    #   * `.config.rb`
+    #   * `Config.rb`
+    #   * `config.rb`
+    #
+    PATTERN = '{.,}config{.rb,}'
 
     #
     # Per library cache.

@@ -9,5 +9,4 @@ rvm:
   - jruby
   - jruby-19mode
   - ree
-env:
-  - config='legacy'
+
