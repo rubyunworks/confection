@@ -1,6 +1,13 @@
 #!/usr/bin/env ruby
 
 #
+# Example configuration.
+#
+config :example do
+  puts "Configuration Example!"
+end
+
+#
 # QED test coverage report using SimpleCov.
 #
 # coverage_folder - the directory in which to store coverage report
@@ -15,13 +22,6 @@ config :qed, :cov do
     coverage_dir(dir || 'log/coverage')
     #add_group "Label", "lib/qed/directory"
   end
-end
-
-#
-# Example configuration.
-#
-config :example do
-  puts "Configuration Example!"
 end
 
 #
