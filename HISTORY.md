@@ -2,12 +2,14 @@
 
 ## 0.3.0 | 2012-04-02
 
-This release renames the mast configuraiton file from `Confile`
-to `Config.rb` --I mean really, it makes more sense.
+This release renames the configuraiton file from `Confile`
+to `Config.rb`. I mean really, it makes more sense. As it currently
+stands then you can use `.config.rb`, 'Config.rb` or `config.rb`
+variations, with precedence taken in that order.
 
 Changes:
 
-* Rename configuration file to `Config.rb`.
+* Rename configuration file from `Confile` to `Config.rb`.
 
 
 ## 0.2.0 | 2012-03-11
