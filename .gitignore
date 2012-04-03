@@ -2,7 +2,7 @@
 .yardoc
 doc
 log
-pkg
+pkg/*.gem
 tmp
 web
 man/man1/*.html
