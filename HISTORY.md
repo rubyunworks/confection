@@ -1,5 +1,15 @@
 # RELEASE HISTORY
 
+## 0.3.0 | 2012-04-02
+
+This release renames the mast configuraiton file from `Confile`
+to `Config.rb` --I mean really, it makes more sense.
+
+Changes:
+
+* Rename configuration file to `Config.rb`.
+
+
 ## 0.2.0 | 2012-03-11
 
 The API has changed and no longer uses #method_missing magic.
