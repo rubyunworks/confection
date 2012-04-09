@@ -9,6 +9,11 @@
 [![Build Status](https://secure.travis-ci.org/rubyworks/confection.png)](http://travis-ci.org/rubyworks/confection)
 
 
+## NOTICE!
+
+This project is presently deprecated in favor of the [RC](http://github.com/rubyworks/rc) project.
+
+
 ## Description
 
 Confection is multi-tenant configuration system for Ruby projects. If was 
